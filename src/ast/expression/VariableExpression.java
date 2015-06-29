@@ -1,5 +1,6 @@
 package ast.expression;
 
+import ast.structs.InputVar;
 import ast.structs.Variable;
 
 /**
@@ -16,5 +17,10 @@ public class VariableExpression extends Expression{
 
     public Variable getVar() {
         return var;
+    }
+
+    @Override
+    public String genJavaCode() {
+        return var.genJavaCodeRef();
     }
 }

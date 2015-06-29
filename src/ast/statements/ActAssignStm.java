@@ -25,4 +25,9 @@ public class ActAssignStm extends ActStatement {
     public Expression getAssign() {
         return assign;
     }
+
+    @Override
+    public String genJavaCode() {
+        return var.name +" = "+assign.genJavaCode()+";";
+    }
 }

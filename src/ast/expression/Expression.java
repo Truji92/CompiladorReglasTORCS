@@ -17,5 +17,5 @@ public abstract class Expression implements Type{
         return type;
     }
 
-    public String genJavaCode(){ return "ExPRESIon";}
+    public abstract String genJavaCode();
 }

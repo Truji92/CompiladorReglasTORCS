@@ -33,4 +33,12 @@ public class CallParameters  {
         }
         return types;
     }
+
+    public String genJavaCode() {
+        String javaCode = "";
+        for (Expression parameter: parameters) {
+            javaCode += ", " + parameter.genJavaCode();
+        }
+        return javaCode;
+    }
 }

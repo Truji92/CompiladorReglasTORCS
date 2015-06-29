@@ -1,5 +1,6 @@
 package ast.structs;
 
+import ast.expression.Expression;
 import ast.statements.ActBlockStm;
 
 /**
@@ -21,5 +22,14 @@ public class Action extends Method {
     public void setBody(ActBlockStm body) {
         this.body = body;
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = "private void " + name + "(SensorModel sensors, Action action" + genArgumentsCode() +")\n";
+        javaCode += body.genJavaCode();
+        return javaCode;
+    }
+
+
 
 }

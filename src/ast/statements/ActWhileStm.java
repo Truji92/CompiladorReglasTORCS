@@ -23,4 +23,9 @@ public class ActWhileStm extends ActStatement {
     public ActStatement getCode() {
         return code;
     }
+
+    @Override
+    public String genJavaCode() {
+        return "while ("+condition.genJavaCode()+")"+code.genJavaCode();
+    }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by alejandro on 28/06/15.
  */
-public class Method extends Declaration implements Type {
+public abstract class Method extends Declaration implements Type {
     protected final String name;
     protected final List<Variable> arguments;
     protected final List<Variable> localVar;
@@ -86,5 +86,14 @@ public class Method extends Declaration implements Type {
             default:
                 return "";
         }
+    }
+
+    protected String genArgumentsCode() {
+        String javaCode = "";
+        for (int i = 0; i < arguments.size(); i++) {
+            Variable argument = arguments.get(i);
+            javaCode += ", "+ argument.genJavaCode();
+        }
+        return javaCode;
     }
 }

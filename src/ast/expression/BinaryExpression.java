@@ -29,6 +29,43 @@ public class BinaryExpression extends Expression {
     }
 
 
+    @Override
+    public String genJavaCode() {
+        return left.genJavaCode() +" "+ getJavaOperator() +" "+right.genJavaCode();
+    }
+
+    private String getJavaOperator() {
+        switch (operator){
+            case AND:
+                return "&&";
+            case OR:
+                return "||";
+            case PROD:
+                return "*";
+            case DIV:
+                return "/";
+            case MOD:
+                return "%";
+            case PLUS:
+                return "+";
+            case MINUS:
+                return "-";
+            case EQ:
+                return "==";
+            case NEQ:
+                return "!=";
+            case GT:
+                return ">";
+            case LT:
+                return "<";
+            case GE:
+                return ">=";
+            case LE:
+                return "<=";
+        }
+        return null;
+    }
+
     /**
      * Operador: AND
      */

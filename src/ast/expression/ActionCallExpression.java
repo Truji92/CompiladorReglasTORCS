@@ -23,4 +23,10 @@ public class ActionCallExpression extends Expression {
     public CallParameters getParameters() {
         return parameters;
     }
+
+    @Override
+    public String genJavaCode() {
+        return action.getName() +"(sensors, action" + parameters.genJavaCode() + ");";
+    }
+
 }

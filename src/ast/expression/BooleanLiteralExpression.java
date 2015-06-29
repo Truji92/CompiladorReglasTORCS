@@ -21,4 +21,10 @@ public class BooleanLiteralExpression extends Literal {
     public boolean getValue() {
         return value;
     }
+
+    @Override
+    public String genJavaCode() {
+        if (value) return "true";
+        else return "false";
+    }
 }

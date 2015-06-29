@@ -23,4 +23,9 @@ public class PerceptionCallExpression extends Expression{
     public CallParameters getParameters() {
         return parameters;
     }
+
+    @Override
+    public String genJavaCode() {
+        return perception.getName() + "(sensors" + parameters.genJavaCode() +")";
+    }
 }

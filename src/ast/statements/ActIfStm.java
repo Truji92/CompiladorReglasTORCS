@@ -29,4 +29,13 @@ public class ActIfStm extends ActStatement {
     public ActStatement getElseStm() {
         return elseStm;
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = "if(" +condition.genJavaCode()+") " + thenStm.genJavaCode();
+        if (elseStm != null) {
+            javaCode += "\nelse " + elseStm.genJavaCode();
+        }
+        return javaCode;
+    }
 }

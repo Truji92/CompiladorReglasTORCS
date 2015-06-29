@@ -30,4 +30,13 @@ public class PcptIfStm extends PcptStatement {
     public PcptStatement getElseStm() {
         return elseStm;
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = "if(" +condition.genJavaCode()+") " + thenStm.genJavaCode();
+        if (elseStm != null) {
+            javaCode += "\nelse " + elseStm.genJavaCode();
+        }
+        return javaCode;
+    }
 }

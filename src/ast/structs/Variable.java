@@ -39,4 +39,22 @@ public class Variable implements Type {
         }
         else return varType == expType;
     }
+
+    public String genJavaCode() {
+        return getTypeAsString() + " " + name;
+    }
+
+    public String genJavaCodeRef() { return name;}
+
+    private String getTypeAsString() {
+        switch (type) {
+            case INT_TYPE:
+                return "int";
+            case BOOLEAN_TYPE:
+                return "boolean";
+            case DOUBLE_TYPE:
+                return "double";
+        }
+        return "";
+    }
 }

@@ -20,4 +20,9 @@ public class IntegerLiteralExpression extends Literal {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String genJavaCode() {
+        return ""+value;
+    }
 }

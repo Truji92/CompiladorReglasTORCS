@@ -23,6 +23,25 @@ public class UnaryExpression extends Expression {
         return op;
     }
 
+    @Override
+    public String genJavaCode() {
+        return getJavaOp() +" "+ expression.genJavaCode();
+    }
+
+    public String getJavaOp() {
+        switch (op) {
+            case NONE:
+                return "";
+            case PLUS:
+                return "+";
+            case MINUS:
+                return "-";
+            case NOT:
+                return "!";
+        }
+        return null;
+    }
+
     /**
      * Código para indicar que no hay operador unario
      */
@@ -42,5 +61,4 @@ public class UnaryExpression extends Expression {
      * Operador: NOT
      */
     public static final int NOT = 3;
-
 }

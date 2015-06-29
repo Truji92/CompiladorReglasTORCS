@@ -13,4 +13,9 @@ public class PcptReturnStm extends PcptStatement {
         super(BOOLEAN_TYPE);
         this.value = value;
     }
+
+    @Override
+    public String genJavaCode() {
+        return "return " + value.genJavaCode() + ";\n";
+    }
 }

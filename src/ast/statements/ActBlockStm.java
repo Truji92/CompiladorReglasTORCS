@@ -21,4 +21,14 @@ public class ActBlockStm extends ActStatement {
     public void addStatement(ActStatement statement) {
         statements.add(statement);
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = "{\n";
+        for (ActStatement statement: statements) {
+            javaCode += statement.genJavaCode() + "\n";
+        }
+        javaCode += "}\n";
+        return javaCode;
+    }
 }

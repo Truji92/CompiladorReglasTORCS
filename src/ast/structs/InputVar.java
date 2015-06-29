@@ -41,6 +41,24 @@ public class InputVar extends Variable {
             super.setType(INT_TYPE);
     }
 
+    @Override
+    public String genJavaCodeRef() {
+        switch (id) {
+           case GEAR:
+               return "sensors.getGear()";
+           case SPEED:
+               return "sensors.getSpeed()";
+           case ANGLE:
+               return "sensors.getAngleToTrackAxis()";
+           case POSITION:
+               return "sensors.getTrackPosition()";
+           case RPM:
+               return "sensors.getRPM()";
+           default:
+               return "sensors.getTrackEdgeSensors()["+id+"]";
+        }
+    }
+
     private int getKind(String lexeme) {
         if (lexeme.equals("speed")) return SPEED;
         else if (lexeme.equals("angle")) return ANGLE;

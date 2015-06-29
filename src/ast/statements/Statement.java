@@ -15,4 +15,6 @@ public abstract class Statement implements Type {
     public int getType() {
         return type;
     }
+
+    public abstract String genJavaCode();
 }

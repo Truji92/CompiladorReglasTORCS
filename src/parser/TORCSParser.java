@@ -72,7 +72,6 @@ public class TORCSParser implements TokenConstants {
 	public boolean parse(String filename) throws Exception{
 		try {
             this.symbolTable = new SymbolTable();
-            //TODO initsymbols
 			this.lexer = new TORCSLexer(filename);
 			this.nextToken = lexer.getNextToken();
 			Controller ASA = parseController();
@@ -176,7 +175,7 @@ public class TORCSParser implements TokenConstants {
                 Variable innerVar = new Variable(name, type, !readOnly);
                 symbolTable.addVariable(innerVar);
                 if(Variable.checkMatchingType(type, lit.getType()))
-                    return new InnerDecl(innerVar);
+                    return new InnerDecl(innerVar , lit);
                 else
                     throw new SemanticException(nextToken); //TODO typeMissMatch
             default: {

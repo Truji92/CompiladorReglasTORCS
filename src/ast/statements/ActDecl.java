@@ -23,4 +23,13 @@ public class ActDecl extends ActStatement{
         this.var = var;
         declarationPlusAssign = false;
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = var.genJavaCode();
+        if (declarationPlusAssign)
+            javaCode += " = " + assign.genJavaCode();
+        javaCode += ";";
+        return javaCode;
+    }
 }

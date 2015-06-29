@@ -21,4 +21,14 @@ public class PcptBlockStm extends PcptStatement {
     public void addStatement(PcptStatement statement) {
         statements.add(statement);
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = "{\n";
+        for (PcptStatement statement: statements) {
+            javaCode += statement.genJavaCode() + "\n";
+        }
+        javaCode += "}\n";
+        return javaCode;
+    }
 }

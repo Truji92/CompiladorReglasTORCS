@@ -19,4 +19,9 @@ public class DoubleLiteralExpression extends Literal {
     public double getValue() {
         return value;
     }
+
+    @Override
+    public String genJavaCode() {
+        return "" + value;
+    }
 }

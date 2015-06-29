@@ -27,4 +27,9 @@ public class OutputVar extends Variable {
         else if (lexeme.equals("steering")) return STEERING;
         else return -1;
     }
+
+    @Override
+    public String genJavaCodeRef() {
+        return "action."+name;
+    }
 }

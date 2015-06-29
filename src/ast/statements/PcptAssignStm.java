@@ -25,5 +25,10 @@ public class PcptAssignStm extends PcptStatement {
     public Expression getAssign() {
         return assign;
     }
+
+    @Override
+    public String genJavaCode() {
+        return var.name +" = "+assign.genJavaCode()+";";
+    }
 }
 
