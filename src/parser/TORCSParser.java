@@ -1191,6 +1191,9 @@ public class TORCSParser implements TokenConstants {
                 match(OR);
                 Expression secondExpression = parseAndExpr();
 
+                if(firsExpression.getType() != Type.BOOLEAN_TYPE || secondExpression.getType() != Type.BOOLEAN_TYPE)
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+
                 Expression newFirst = new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.OR, firsExpression, secondExpression);
 
                 return parseListOrExpr(newFirst);
@@ -1260,6 +1263,10 @@ public class TORCSParser implements TokenConstants {
             case AND:
                 match(AND);
                 Expression secondExpression = parseRelExpr();
+
+                if(firstExpression.getType() != Type.BOOLEAN_TYPE || secondExpression.getType() != Type.BOOLEAN_TYPE)
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+
                 Expression newFirst = new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.AND, firstExpression, secondExpression);
 
                 return parseListAndExpr(newFirst);
@@ -1335,6 +1342,13 @@ public class TORCSParser implements TokenConstants {
             case LE:
                 int relOp = parseRelOp();
                 Expression secondExpression = parseSumExpr();
+
+                if (firsExpression.getType() == Type.INT_TYPE || firsExpression.getType() == Type.DOUBLE_TYPE) {
+                    if (secondExpression.getType() == Type.INT_TYPE || secondExpression.getType() == Type.DOUBLE_TYPE) {
+                    }//all ok
+                    else throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+                } else if(firsExpression.getType() != secondExpression.getType())
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
 
                 return new BinaryExpression(Type.BOOLEAN_TYPE, relOp, firsExpression, secondExpression);
             case RPAREN:
@@ -1415,6 +1429,13 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_18:
                 int unOp = parseUnOP();
                 Expression firstExpressionSinOP = parseProdExpr();
+
+                if (unOp == UnaryExpression.NOT && firstExpressionSinOP.getType() != Type.BOOLEAN_TYPE)
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+                if (unOp == UnaryExpression.MINUS || unOp == UnaryExpression.PLUS)
+                    if (firstExpressionSinOP.getType() != Type.INT_TYPE &&  firstExpressionSinOP.getType() != Type.DOUBLE_TYPE)
+                        throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+
                 Expression firstExpression = new UnaryExpression(firstExpressionSinOP.getType(), unOp, firstExpressionSinOP); //TODO chek tipos operandos
 
                 return parseListSumOp(firstExpression);
@@ -1434,8 +1455,15 @@ public class TORCSParser implements TokenConstants {
             case PLUS:
             case MINUS:
                 int sumOp = parseSumOp();
+                int resultType;
+
                 Expression secondExpression = parseProdExpr();
-                Expression newFirst = new BinaryExpression(firstExpression.getType(), sumOp, firstExpression, secondExpression);
+
+                if (firstExpression.getType() == Type.BOOLEAN_TYPE || secondExpression.getType() == Type.BOOLEAN_TYPE)
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+
+                resultType = Math.max(firstExpression.getType(), secondExpression.getType()); //int 0 double 1
+                Expression newFirst = new BinaryExpression(resultType, sumOp, firstExpression, secondExpression);
                 return parseListSumOp(newFirst);
             case RPAREN:
             case SEMICOLON:
@@ -1578,11 +1606,18 @@ public class TORCSParser implements TokenConstants {
             case MOD:
                 int multOp = parseMultOp();
                 Expression secondExpression = parseFactor();
+
+                if (firstExpression.getType() == Type.BOOLEAN_TYPE || secondExpression.getType() == Type.BOOLEAN_TYPE)
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
+
+                int resultType;
+                resultType = Math.max(firstExpression.getType(), secondExpression.getType()); //int 0 double 1
+
                 Expression newFirst;
                 if (multOp == BinaryExpression.MOD)
                     newFirst = new BinaryExpression(Type.INT_TYPE, multOp, firstExpression, secondExpression);
                 else
-                    newFirst = new BinaryExpression(firstExpression.getType(), multOp, firstExpression, secondExpression);
+                    newFirst = new BinaryExpression(resultType, multOp, firstExpression, secondExpression);
 
                 return parseListFactor(newFirst);
             case RPAREN:
