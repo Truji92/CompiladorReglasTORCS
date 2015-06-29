@@ -1,7 +1,5 @@
 package ast.structs;
 
-import java.io.File;
-import java.net.FileNameMap;
 import java.util.List;
 
 /**
@@ -24,7 +22,7 @@ public class Controller {
         String javaCode =
                 "import champ2011client.*;\n" +
                         "\n" +
-                        "public class "+ Filename+" extends Controller {\n" +
+                        "public class "+ extractName(Filename)+" extends Controller {\n" +
                         "\n" +
                         genJavaCodeDeclarations() + "\n" +
                         rules.genJavaCode()+"\n"+
@@ -32,12 +30,21 @@ public class Controller {
         return javaCode;
     }
 
+    private String extractName(String filename) {
+        String auxFilename = filename;
+        while(!auxFilename.matches("[^/]*.tc")){
+            int index = auxFilename.indexOf('/') + 1;
+            auxFilename = auxFilename.substring(index);
+        }
+        return auxFilename.substring(0, auxFilename.length()-3);
+    }
+
     private String genJavaCodeDeclarations() {
         String javaCode = "";
         for (Declaration declaration: declarations){
             javaCode +=
                     "\n" +
-                    declaration.genJavaCode() +
+                    "\t"+declaration.genJavaCode() +
                     "\n";
         }
         return javaCode;

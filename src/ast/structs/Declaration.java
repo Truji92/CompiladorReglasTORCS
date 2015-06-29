@@ -5,7 +5,5 @@ package ast.structs;
  */
 public abstract class Declaration {
 
-    public String genJavaCode() {
-        return "AQUI VAN LAS DECLARACIONES";
-    }
+    public abstract String genJavaCode();
 }

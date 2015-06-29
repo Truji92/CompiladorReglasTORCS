@@ -16,4 +16,14 @@ public class Rule {
         this.expression = expression;
         this.actions = actions;
     }
+
+    public String genJavaCode() {
+        String javaCode = "if (";
+        javaCode += expression.genJavaCode() + ") {\n";
+        for (ActionCallExpression action: actions) {
+            javaCode += "\t\t\t"+action.genJavaCode() + "\n";
+        }
+        javaCode += "\t\t}\n";
+        return javaCode;
+    }
 }

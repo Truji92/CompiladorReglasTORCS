@@ -14,7 +14,16 @@ public class Rules {
     }
 
     public String genJavaCode() {
-        return "AQUI VAN LAS REGLAS";
+        String javaCode = "\tpublic Action control(SensorModel sensors) {\n" +
+                          "\t\tAction action = new Action();";
+        for (Rule rule: rules) {
+            javaCode +=
+                    "\n" +
+                    "\t\t" + rule.genJavaCode();
+        }
+        javaCode += "\t\treturn action;\n" +
+                    "\t}\n";
+        return javaCode;
 
     }
 }

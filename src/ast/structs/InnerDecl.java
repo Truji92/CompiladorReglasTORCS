@@ -14,4 +14,11 @@ public class InnerDecl extends Declaration {
     public Variable getVar() {
         return var;
     }
+
+    @Override
+    public String genJavaCode() {
+        String javaCode = "private";
+
+        return javaCode;
+    }
 }
