@@ -13,4 +13,8 @@ public class Rules {
         this.rules = rules;
     }
 
+    public String genJavaCode() {
+        return "AQUI VAN LAS REGLAS";
+
+    }
 }

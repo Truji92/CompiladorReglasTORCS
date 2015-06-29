@@ -76,6 +76,7 @@ public class TORCSParser implements TokenConstants {
 			this.lexer = new TORCSLexer(filename);
 			this.nextToken = lexer.getNextToken();
 			Controller ASA = parseController();
+            System.out.println(ASA.genJavaCode(filename));
             return nextToken.getKind() == EOF;
 		} catch (Exception ex) {
 			System.out.println(ex.toString());

@@ -1,5 +1,7 @@
 package ast.structs;
 
+import java.io.File;
+import java.net.FileNameMap;
 import java.util.List;
 
 /**
@@ -15,5 +17,29 @@ public class Controller {
     public Controller(List<Declaration> declarations, Rules rules) {
         this.declarations = declarations;
         this.rules = rules;
+    }
+
+
+    public String genJavaCode(String Filename) {
+        String javaCode =
+                "import champ2011client.*;\n" +
+                        "\n" +
+                        "public class "+ Filename+" extends Controller {\n" +
+                        "\n" +
+                        genJavaCodeDeclarations() + "\n" +
+                        rules.genJavaCode()+"\n"+
+                        "}";
+        return javaCode;
+    }
+
+    private String genJavaCodeDeclarations() {
+        String javaCode = "";
+        for (Declaration declaration: declarations){
+            javaCode +=
+                    "\n" +
+                    declaration.genJavaCode() +
+                    "\n";
+        }
+        return javaCode;
     }
 }
