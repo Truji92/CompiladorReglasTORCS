@@ -1,4 +1,4 @@
-//------------------------------------------------------------------//
+package parser;//------------------------------------------------------------------//
 //                        COPYRIGHT NOTICE                          //
 //------------------------------------------------------------------//
 // Copyright (c) 2008, Francisco Jos� Moreno Velo                   //
@@ -48,113 +48,155 @@
 //                                                                  //
 //------------------------------------------------------------------//
 
-
-import java.io.*;
-
 /**
- * Clase que desarrolla el funcionamiento de una M�quina Discriminadora
- * Determinista
- * 
- * @author Francisco Jos� Moreno Velo
+ * Interfaz que define los c�digos de las diferentes categor�as l�xicas
+ *  
+ * * @author Francisco Jos� Moreno Velo
  *
  */
-public abstract class Lexer {
+public interface TokenConstants {
 
 	/**
-	 * Flujo de entrada que permite el retroceso
+	 * Final de fichero
 	 */
-	private BufferedCharStream stream;
+	public int EOF = 0;
+	
+	//--------------------------------------------------------------//
+	// Palabras clave
+	//--------------------------------------------------------------//
+
+    public int PERCEPTION = 1;
+    public int ACTION = 2;
+	public int RULES = 3;
+	public int INNER = 4;
+	public int INT = 5;
+	public int DOUBLE = 6;
+	public int BOOLEAN = 7;
+	public int TRUE = 8;
+	public int FALSE = 9;
+    public int SPEED = 10;
+    public int ANGLE = 11;
+    public int POSITION = 12;
+    public int RPM = 13;
+    public int SENSOR_0 = 14;
+    public int SENSOR_1 = 15;
+    public int SENSOR_2 = 16;
+    public int SENSOR_3 = 17;
+    public int SENSOR_4 = 18;
+    public int SENSOR_5 = 19;
+    public int SENSOR_6 = 20;
+    public int SENSOR_7 = 21;
+    public int SENSOR_8 = 22;
+    public int SENSOR_9 = 23;
+    public int SENSOR_10 = 24;
+    public int SENSOR_11 = 25;
+    public int SENSOR_12 = 26;
+    public int SENSOR_13 = 27;
+    public int SENSOR_14 = 28;
+    public int SENSOR_15 = 29;
+    public int SENSOR_16 = 30;
+    public int SENSOR_17 = 31;
+    public int SENSOR_18 = 32;
+    public int GEAR = 33;
+    public int ACCELERATE = 34;
+    public int BRAKE = 35;
+    public int STEERING = 36;
+    public int IF = 37;
+    public int ELSE = 38;
+    public int WHILE = 39;
+
+	//--------------------------------------------------------------//
+	// Identificadores y literales
+	//--------------------------------------------------------------//
+
+	public int IDENTIFIER = 40;
+	public int INTEGER_LITERAL = 41;
+	public int DOUBLE_LITERAL = 42;
+
+	//--------------------------------------------------------------//
+	// Separadores
+	//--------------------------------------------------------------//
+
+	public int LPAREN = 43;
+	public int RPAREN = 44;
+	public int LBRACE = 45;
+	public int RBRACE = 46;
+	public int SEMICOLON = 47;
+	public int COMMA = 48;
+    public int ARROW = 64;
+	
+	//--------------------------------------------------------------//
+	// Operadores
+	//--------------------------------------------------------------//
+
+    /** <- */
+	public int ASSIGN = 49;
+
+    /** = */
+	public int EQ = 50;
+
+    /**
+	 * Menor "<"
+	 */
+	public int LT = 51;
+
+    /**
+	 * Menor o igual "<="
+	 */
+	public int LE = 52;
 	
 	/**
-	 * Transiciones del aut�mata de la m�quina
-	 * 
-	 * @param state Estado inicial
-	 * @param symbol S�mbolo del alfabeto
-	 * @return Estado final
+	 * Mayor ">"
 	 */
-	protected abstract int transition(int state, char symbol);
+	public int GT = 53;
 	
 	/**
-	 * Verifica si un estado es final
-	 * 
-	 * @param state Estado
-	 * @return true, si el estado es final
+	 * Mayor o igual ">="
 	 */
-	protected abstract boolean isFinal(int state);
+	public int GE = 54;
 	
 	/**
-	 * Genera el componente l�xico correspondiente al estado final y
-	 * al lexema encontrado. Devuelve null si la acci�n asociada al
-	 * estado final es omitir (SKIP).
-	 * 
-	 * @param state Estado final alcanzado
-	 * @param lexeme Lexema reconocido
-	 * @param row Fila de comienzo del lexema
-	 * @param column Columna de comienzo del lexema
-	 * @return Componente l�xico correspondiente al estado final y al lexema
+	 * Distinto "<>"
 	 */
-	protected abstract Token getToken(int state, String lexeme, int row, int column);
+	public int NE = 55;
 	
 	/**
-	 * Constructor
-	 * @param filename Nombre del fichero fuente
-	 * @throws IOException En caso de problemas con el flujo de entrada
+	 * Or "|"
 	 */
-	public Lexer(String filename) throws IOException {
-		this.stream = new BufferedCharStream(new File(filename));
-	}
+	public int OR = 56;
 	
 	/**
-	 * Obtiene el siguiente componente l�xico del flujo de entrada
-	 * @return Siguiente componente l�xico
+	 * and "&"
 	 */
-	public Token getNextToken() {
-		Token nextToken = tokenize();
-		while(nextToken == null) nextToken = tokenize();
-		return nextToken;
-	}
+	public int AND = 57;
 	
 	/**
-	 * Cierra el flujo de entrada
+	 * Not "!"
 	 */
-	public void close() {
-		this.stream.close();
-	}
+	public int NOT = 58;
 	
 	/**
-	 * Ejecuta la m�quina discriminadora determinista para extaer el siguiente token
-	 * de la cadena de entrada. Si el lexema extraido corresponde a un blanco o
-	 * comentario el token devuelto ser� nulo.
-	 * 
-	 * @return
+	 * Suma "+"
 	 */
-	private Token tokenize() {
-		int finalState = -1;
-		StringBuffer lexeme = new StringBuffer();
-		StringBuffer tainting = new StringBuffer();
-		char newChar = stream.getNextChar();
-		int state = transition(0,newChar);
-		int row = stream.getRow();
-		int column = stream.getColumn();
-		while(state!=-1 && newChar != '\0') {
-			tainting.append(newChar);
-			if(isFinal(state)) {
-				finalState = state;
-				lexeme.append(tainting);
-				tainting.delete(0,tainting.length());
-			}
-			newChar = stream.getNextChar();
-			state = transition(state,newChar);
-		}
-		if(finalState != -1) {
-			stream.retract(1+tainting.length());
-			return getToken(finalState,lexeme.toString(),row,column);
-		} else if(newChar != '\0') {
-			stream.retract(tainting.length());
-			throw new LexicalError(newChar,row,column);
-		} else {
-			stream.retract(1);
-			return new Token(Token.EOF,"",row,column);
-		}	
-	}
+	public int PLUS = 59;
+	
+	/**
+	 * Resta "-"
+	 */
+	public int MINUS = 60;
+	
+	/**
+	 * Producto "*"
+	 */
+	public int PROD = 61;
+	
+	/**
+	 * Divisi�n "/"
+	 */
+	public int DIV = 62;
+	
+	/**
+	 * M�dulo "%"
+	 */
+	public int MOD = 63;
 }

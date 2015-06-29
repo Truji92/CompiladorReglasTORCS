@@ -1,4 +1,4 @@
-//------------------------------------------------------------------//
+package parser;//------------------------------------------------------------------//
 //COPYRIGHT NOTICE                          //
 //------------------------------------------------------------------//
 //Copyright (c) 2008, Francisco Jos� Moreno Velo                   //
@@ -49,7 +49,6 @@
 //------------------------------------------------------------------//
 
 
-import ast.SemanticException;
 import ast.Type;
 import ast.expression.*;
 import ast.statements.*;
@@ -59,40 +58,24 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Analizador sint�ctico de Tinto basado en una gram�tica BNF y LL(1)
- *  
- * @author Francisco Jos� Moreno Velo
- *
- */
+
 public class TORCSParser implements TokenConstants {
 
-	/**
-	 * Analizador l�xico
-	 */
+
 	private TORCSLexer lexer;
 
-	/**
-	 * Siguiente token de la cadena de entrada
-	 */
 	private Token nextToken;
-
 
     private SymbolTable symbolTable;
 
-	/**
-	 * M�todo de an�lisis de un fichero
-	 * 
-	 * @param filename Nombre del fichero a analizar
-	 * @return Resultado del an�lisis sint�ctico
-	 */
+
 	public boolean parse(String filename) throws Exception{
 		//try {
             this.symbolTable = new SymbolTable();
             //TODO initsymbols
 			this.lexer = new TORCSLexer(filename);
 			this.nextToken = lexer.getNextToken();
-			parseController();
+			Controller ASA = parseController();
             return nextToken.getKind() == EOF;
 		//} catch (Exception ex) {
 //			System.out.println(ex.toString());
@@ -100,11 +83,7 @@ public class TORCSParser implements TokenConstants {
 //		}
 	}
 
-	/**
-	 * Punto de entrada para ejecutar pruebas del analizador sint�ctico
-	 * 
-	 * @param args
-	 */
+
 	public static void main(String[] args) throws Exception{
 		if(args.length == 0) return;
 
@@ -116,11 +95,7 @@ public class TORCSParser implements TokenConstants {
 		}
 	}
 
-	/**
-	 * M�todo que consume un token de la cadena de entrada
-	 * @param kind Tipo de token a consumir
-	 * @throws SintaxException Si el tipo no coincide con el token 
-	 */
+
 	private String match(int kind) throws SintaxException {
 		if(nextToken.getKind() == kind) {
             String lex = nextToken.getLexeme();
@@ -171,11 +146,17 @@ public class TORCSParser implements TokenConstants {
     private Declaration parseDeclaration() throws SintaxException, SemanticException{
         switch (nextToken.getKind()) {
             case INNER:
-                return parseInnerDecl();
+                InnerDecl inner = parseInnerDecl();
+                symbolTable.addDeclaration(inner.getVar().name, inner);
+                return inner;
             case PERCEPTION:
-                return parsePerceptionDecl();
+                Perception perc = parsePerceptionDecl();
+                symbolTable.addDeclaration(perc.getTypedName(), perc);
+                return perc;
             case ACTION:
-                return parseActionDecl();
+                Action act = parseActionDecl();
+                symbolTable.addDeclaration(act.getTypedName(), act);
+                return act;
             default: {
                 int[] expected = {INNER, PERCEPTION, ACTION};
                 throw new SintaxException(nextToken, expected);
@@ -194,10 +175,10 @@ public class TORCSParser implements TokenConstants {
                 match(SEMICOLON);
                 Variable innerVar = new Variable(name, type, !readOnly);
                 symbolTable.addVariable(innerVar);
-                if(type == lit.getType())
+                if(Variable.checkMatchingType(type, lit.getType()))
                     return new InnerDecl(innerVar);
                 else
-                    throw new SemanticException(); //TODO typeMissMatch
+                    throw new SemanticException(nextToken); //TODO typeMissMatch
             default: {
                 int[] expected = {INNER};
                 throw new SintaxException(nextToken, expected);
@@ -647,11 +628,12 @@ public class TORCSParser implements TokenConstants {
             case DOUBLE:
                 int type = parseType();
                 String name = match(IDENTIFIER);
+                Variable localVar = new Variable(name, type, !readOnly); //TODO ControlLocales
+                symbolTable.addVariable(localVar);
+
                 Expression assign = parseOptAssign(type);
                 match(SEMICOLON);
 
-                Variable localVar = new Variable(name, type, !readOnly); //TODO ControlLocales
-                symbolTable.addVariable(localVar);
                 if (assign != null)
                     return new PcptDecl(localVar, assign);
                 else return new PcptDecl(localVar);
@@ -668,9 +650,9 @@ public class TORCSParser implements TokenConstants {
                 match(ASSIGN);
                 Expression expression = parseExpr();
 
-                if(expression.getType() == type)
+                if(Variable.checkMatchingType(type, expression.getType()))
                     return expression;
-                else throw new SemanticException(); //TODO typeMissmatch
+                else throw new SemanticException(nextToken); //TODO typeMissmatch
             case SEMICOLON:
                 return null;
             default: {
@@ -687,7 +669,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if(condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(); // TODO TYPEEES
+                    throw new SemanticException(nextToken); // TODO TYPEEES
                 match(RPAREN);
                 PcptStatement thenCode = parsePcptStatement();
                 PcptStatement elseCode = PcptElse();
@@ -731,7 +713,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if (condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(); //TODO typeeee
+                    throw new SemanticException(nextToken); //TODO typeeee
                 match(RPAREN);
 
                 PcptStatement whileCode = parsePcptStatement();
@@ -749,12 +731,12 @@ public class TORCSParser implements TokenConstants {
                 String name = match(IDENTIFIER);
                 Variable var = symbolTable.getVariable(name);
                 if (var == null)
-                    throw new SemanticException(); //TODO Not Declared Var
+                    throw new SemanticException(nextToken); //TODO Not Declared Var
                 match(ASSIGN);
                 Expression expression = parseExpr();
                 match(SEMICOLON);
-                if (var.getType() != expression.getType())
-                    throw new SemanticException(); //TODO type agaaain
+                if (Variable.checkMatchingType(var.getType(), expression.getType()))
+                    throw new SemanticException(nextToken); //TODO type agaaain
                 else return new PcptAssignStm(var, expression);
             default: {
                 int[] expected = {IDENTIFIER};
@@ -838,11 +820,12 @@ public class TORCSParser implements TokenConstants {
             case DOUBLE:
                 int type = parseType();
                 String name = match(IDENTIFIER);
-                Expression assign = parseOptAssign(type);
-                match(SEMICOLON);
 
                 Variable localVar = new Variable(name, type, !readOnly); //TODO CHECK VARIABLE
                 symbolTable.addVariable(localVar);
+
+                Expression assign = parseOptAssign(type);
+                match(SEMICOLON);
 
                 if (assign == null)
                     return new ActDecl(localVar);
@@ -861,7 +844,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if (condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(); //TODO type
+                    throw new SemanticException(nextToken); //TODO type
                 match(RPAREN);
 
                 ActStatement thenCode = parseActStatement();
@@ -908,7 +891,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if (condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(); //TODO types
+                    throw new SemanticException(nextToken); //TODO types
                 match(RPAREN);
                 ActStatement whileCode = parseActStatement();
 
@@ -926,13 +909,13 @@ public class TORCSParser implements TokenConstants {
                 String name = match(IDENTIFIER);
                 Variable var = symbolTable.getVariable(name);
                 if (var == null)
-                    throw new SemanticException(); //TODO not declared
+                    throw new SemanticException(nextToken); //TODO not declared
                 match(ASSIGN);
                 Expression assign = parseExpr();
                 match(SEMICOLON);
-                if (assign.getType() == var.getType())
+                if (Variable.checkMatchingType(var.getType(), assign.getType()))
                     return new ActAssignStm(var, assign);
-                else throw new SemanticException(); //TODO type misss
+                else throw new SemanticException(nextToken); //TODO type misss
             case GEAR:
             case ACCELERATE:
             case BRAKE:
@@ -941,9 +924,9 @@ public class TORCSParser implements TokenConstants {
                 match(ASSIGN);
                 Expression outExpression = parseExpr();
                 match(SEMICOLON);
-                if (outVar.getType() == outExpression.getType())
+                if (Variable.checkMatchingType(outVar.getType(), outExpression.getType()))
                     return new ActAssignStm(outVar, outExpression);
-                else throw new SemanticException(); //TODO type
+                else throw new SemanticException(nextToken); //TODO type
             default: {
                 int[] expected = {IDENTIFIER, GEAR, ACCELERATE, BRAKE, STEERING};
                 throw new SintaxException(nextToken, expected);
@@ -1006,7 +989,7 @@ public class TORCSParser implements TokenConstants {
                 //END PRI(EXPR)
                 Expression condition = parseExpr();
                 if(condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(); //TODO type
+                    throw new SemanticException(nextToken); //TODO type
                 match(ARROW);
                 ActionCallExpression firstActionCall = parseActionCall();
                 List<ActionCallExpression> othersActionCall = parseMoreActionCall();
@@ -1054,9 +1037,16 @@ public class TORCSParser implements TokenConstants {
             case IDENTIFIER:
                 String name = match(IDENTIFIER); //TODO check exist
                 match(LPAREN);
-                List<Expression> paremeters = parseListExpr();
+                List<Expression> parameters = parseListExpr();
                 match(RPAREN);
-                return null; //TODO ACTIONS EN TABLA
+                String callName = Method.createTypedName(name, parameters);
+                Declaration call = symbolTable.getGlobalDeclaration(callName);
+                if (call == null)
+                    throw new SemanticException(nextToken); //TODO not declared
+                else if (call instanceof Action)
+                    return new ActionCallExpression( (Action) call, new CallParameters(parameters));
+                else
+                    throw new SemanticException(nextToken); //TODO not correct signature
             default: {
                 int[] expected = {IDENTIFIER};
                 throw new SintaxException(nextToken, expected);
@@ -1177,11 +1167,9 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_17:
             case SENSOR_18:
                 Expression firstExpression = parseAndExpr();
-                Expression secondExpression = parseListOrExpr();
-                if (secondExpression == null)
-                    return new UnaryExpression(firstExpression.getType(), UnaryExpression.NONE, firstExpression);
-                else
-                    return new BinaryExpression(Expression.BOOLEAN_TYPE, BinaryExpression.AND, firstExpression, secondExpression);
+                Expression secondExpression = parseListOrExpr(firstExpression);
+
+                return secondExpression;
             default: {
                 int[] expected = {NOT, MINUS, PLUS, INTEGER_LITERAL, DOUBLE_LITERAL, TRUE, FALSE, IDENTIFIER,
                         LPAREN, GEAR, SPEED, ANGLE, POSITION, RPM, SENSOR_0, SENSOR_1, SENSOR_2, SENSOR_3,
@@ -1193,21 +1181,19 @@ public class TORCSParser implements TokenConstants {
         }
     }
 
-    private Expression parseListOrExpr() throws SintaxException, SemanticException {
+    private Expression parseListOrExpr(Expression firsExpression) throws SintaxException, SemanticException {
         switch (nextToken.getKind()) {
             case OR:
                 match(OR);
-                Expression firstExpression = parseAndExpr();
-                Expression secondExpression = parseListOrExpr();
-                if (secondExpression == null)
-                    return new UnaryExpression(firstExpression.getType(), UnaryExpression.NONE, firstExpression);
-                else
-                    return new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.OR, firstExpression, secondExpression);
+                Expression secondExpression = parseAndExpr();
+                Expression newFirst = new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.OR, firsExpression, secondExpression);
+
+                return parseListOrExpr(newFirst);
             case RPAREN:
             case SEMICOLON:
             case ARROW:
             case COMMA:
-                return null;
+                return firsExpression;
             default: {
                 int[] expected = {OR, RPAREN, SEMICOLON, ARROW, COMMA};
                 throw new SintaxException(nextToken, expected);
@@ -1251,12 +1237,8 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_17:
             case SENSOR_18:
                 Expression firstExpression = parseRelExpr();
-                Expression secondExpression = parseListAndExpr();
+                return parseListAndExpr(firstExpression);
 
-                if(secondExpression == null)
-                    return new UnaryExpression(firstExpression.getType(), UnaryExpression.NONE, firstExpression);
-                else
-                    return new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.AND, firstExpression, secondExpression);
             default: {
                 int[] expected = {NOT, MINUS, PLUS, INTEGER_LITERAL, DOUBLE_LITERAL, TRUE, FALSE, IDENTIFIER,
                         LPAREN, GEAR, SPEED, ANGLE, POSITION, RPM, SENSOR_0, SENSOR_1, SENSOR_2, SENSOR_3,
@@ -1268,23 +1250,20 @@ public class TORCSParser implements TokenConstants {
         }
     }
 
-    private Expression parseListAndExpr() throws SintaxException, SemanticException {
+    private Expression parseListAndExpr(Expression firstExpression) throws SintaxException, SemanticException {
         switch (nextToken.getKind()) {
             case AND:
                 match(AND);
-                Expression firstExpression = parseRelExpr();
-                Expression secondExpression = parseListAndExpr();
+                Expression secondExpression = parseRelExpr();
+                Expression newFirst = new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.AND, firstExpression, secondExpression);
 
-                if(secondExpression == null)
-                    return new UnaryExpression(firstExpression.getType(), UnaryExpression.NONE, firstExpression);
-                else
-                    return new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.AND, firstExpression, secondExpression);
+                return parseListAndExpr(newFirst);
             case RPAREN:
             case SEMICOLON:
             case ARROW:
             case COMMA:
             case OR:
-                return null;
+                return firstExpression;
             default: {
                 int[] expected = {AND, RPAREN, SEMICOLON, ARROW, COMMA, OR};
                 throw new SintaxException(nextToken, expected);
@@ -1432,7 +1411,7 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_18:
                 int unOp = parseUnOP();
                 Expression firstExpressionSinOP = parseProdExpr();
-                Expression firstExpression = new UnaryExpression(firstExpressionSinOP.getType(), unOp, firstExpressionSinOP);
+                Expression firstExpression = new UnaryExpression(firstExpressionSinOP.getType(), unOp, firstExpressionSinOP); //TODO chek tipos operandos
                 Expression secondExpression = parseListSumOp(firstExpression);
 
                 return secondExpression;
@@ -1597,7 +1576,11 @@ public class TORCSParser implements TokenConstants {
             case MOD:
                 int multOp = parseMultOp();
                 Expression secondExpression = parseFactor();
-                Expression newFirst = new BinaryExpression(firstExpression.getType(), multOp, firstExpression, secondExpression);
+                Expression newFirst;
+                if (multOp == BinaryExpression.MOD)
+                    newFirst = new BinaryExpression(Type.INT_TYPE, multOp, firstExpression, secondExpression);
+                else
+                    newFirst = new BinaryExpression(firstExpression.getType(), multOp, firstExpression, secondExpression);
 
                 return parseListFactor(newFirst);
             case RPAREN:
@@ -1746,7 +1729,7 @@ public class TORCSParser implements TokenConstants {
             case DIV:
             case MOD:
                 Variable var = symbolTable.getVariable(name);
-                if (var == null) throw new SemanticException(); //TODO not declared
+                if (var == null) throw new SemanticException(nextToken); //TODO not declared
                 else return new VariableExpression(var);
             default: {
                 int[] expected = {LPAREN, RPAREN, SEMICOLON, ARROW, COMMA, OR, AND, EQ, NE,
@@ -1762,7 +1745,17 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 List<Expression> parameters = parseListExpr();
                 match(RPAREN);
-                return null; //TODO añadir llamadas a la tabla
+
+                String callName = Method.createTypedName(name, parameters);
+                Declaration call = symbolTable.getGlobalDeclaration(callName);
+
+                if (call == null)
+                    throw new SemanticException(nextToken); //TODO not declared
+                else if (call instanceof Perception)
+                    return new PerceptionCallExpression( (Perception) call, new CallParameters(parameters));
+                else
+                    throw new SemanticException(nextToken); //TODO Wrong signature
+
             default: {
                 int[] expected = {LPAREN};
                 throw new SintaxException(nextToken, expected);

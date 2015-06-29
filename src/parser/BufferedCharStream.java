@@ -1,4 +1,4 @@
-//------------------------------------------------------------------//
+package parser;//------------------------------------------------------------------//
 //                        COPYRIGHT NOTICE                          //
 //------------------------------------------------------------------//
 // Copyright (c) 2008, Francisco Jos� Moreno Velo                   //
@@ -48,155 +48,143 @@
 //                                                                  //
 //------------------------------------------------------------------//
 
+
+import java.io.*;
+
 /**
- * Interfaz que define los c�digos de las diferentes categor�as l�xicas
- *  
- * * @author Francisco Jos� Moreno Velo
- *
- */
-public interface TokenConstants {
+ * Flujo de entrada basado en un doble buffer que optimiza el acceso
+ * a un fichero de caracteres y permite retroceder en la lectura
+ * 
+ * @author Francisco Jos� Moreno Velo
+  */
+public class BufferedCharStream {
 
 	/**
-	 * Final de fichero
+	 * Tama�o de la mitad del buffer
 	 */
-	public int EOF = 0;
+	private static final int HALFSIZE = 1024;
 	
-	//--------------------------------------------------------------//
-	// Palabras clave
-	//--------------------------------------------------------------//
+	/**
+	 * Tama�o del buffer
+	 */
+	private static final int SIZE = 2*HALFSIZE;
 
-    public int PERCEPTION = 1;
-    public int ACTION = 2;
-	public int RULES = 3;
-	public int INNER = 4;
-	public int INT = 5;
-	public int DOUBLE = 6;
-	public int BOOLEAN = 7;
-	public int TRUE = 8;
-	public int FALSE = 9;
-    public int SPEED = 10;
-    public int ANGLE = 11;
-    public int POSITION = 12;
-    public int RPM = 13;
-    public int SENSOR_0 = 14;
-    public int SENSOR_1 = 15;
-    public int SENSOR_2 = 16;
-    public int SENSOR_3 = 17;
-    public int SENSOR_4 = 18;
-    public int SENSOR_5 = 19;
-    public int SENSOR_6 = 20;
-    public int SENSOR_7 = 21;
-    public int SENSOR_8 = 22;
-    public int SENSOR_9 = 23;
-    public int SENSOR_10 = 24;
-    public int SENSOR_11 = 25;
-    public int SENSOR_12 = 26;
-    public int SENSOR_13 = 27;
-    public int SENSOR_14 = 28;
-    public int SENSOR_15 = 29;
-    public int SENSOR_16 = 30;
-    public int SENSOR_17 = 31;
-    public int SENSOR_18 = 32;
-    public int GEAR = 33;
-    public int ACCELERATE = 34;
-    public int BRAKE = 35;
-    public int STEERING = 36;
-    public int IF = 37;
-    public int ELSE = 38;
-    public int WHILE = 39;
-
-	//--------------------------------------------------------------//
-	// Identificadores y literales
-	//--------------------------------------------------------------//
-
-	public int IDENTIFIER = 40;
-	public int INTEGER_LITERAL = 41;
-	public int DOUBLE_LITERAL = 42;
-
-	//--------------------------------------------------------------//
-	// Separadores
-	//--------------------------------------------------------------//
-
-	public int LPAREN = 43;
-	public int RPAREN = 44;
-	public int LBRACE = 45;
-	public int RBRACE = 46;
-	public int SEMICOLON = 47;
-	public int COMMA = 48;
-    public int ARROW = 64;
-	
-	//--------------------------------------------------------------//
-	// Operadores
-	//--------------------------------------------------------------//
-
-    /** <- */
-	public int ASSIGN = 49;
-
-    /** = */
-	public int EQ = 50;
-
-    /**
-	 * Menor "<"
+	/**
+	 * Flujo de entrada
 	 */
-	public int LT = 51;
-
-    /**
-	 * Menor o igual "<="
-	 */
-	public int LE = 52;
+	private InputStream stream;
 	
 	/**
-	 * Mayor ">"
+	 * Buffer de datos
 	 */
-	public int GT = 53;
+	private byte[] buffer;
 	
 	/**
-	 * Mayor o igual ">="
+	 * Contador de l�nea de los caracteres del buffer
 	 */
-	public int GE = 54;
+	private int[] row;
 	
 	/**
-	 * Distinto "<>"
+	 * Contador de columna de los caracteres del buffer
 	 */
-	public int NE = 55;
+	private int[] column;
 	
 	/**
-	 * Or "|"
+	 * Flag que indica si el �ltimo trozo en llenarse ha sido
+	 * el que empieza al principio (false) o en la mitad (true)
 	 */
-	public int OR = 56;
+	private boolean half;
 	
 	/**
-	 * and "&"
+	 * Marcador del �ltimo car�cter leido
 	 */
-	public int AND = 57;
+	private int index;
 	
 	/**
-	 * Not "!"
+	 * Constructor
+	 * 
+	 * @param file
+	 * @throws IOException
 	 */
-	public int NOT = 58;
+	public BufferedCharStream(File file) throws IOException {
+		this.stream = new FileInputStream(file);
+		this.buffer = new byte[SIZE];
+		this.row = new int[SIZE];
+		this.column = new int[SIZE];
+		this.half = true; // para que comience llenando la parte baja
+		load();
+		this.index = -1;
+	}
 	
 	/**
-	 * Suma "+"
+	 * Cierra el flujo de entrada
 	 */
-	public int PLUS = 59;
+	public void close() {
+		try { this.stream.close(); }
+		catch(IOException ex) {}
+	}
 	
 	/**
-	 * Resta "-"
+	 * Carga un bloque de medio buffer en la zona correspondiente
+	 * y calcula los valores de l�neas y columnas
 	 */
-	public int MINUS = 60;
+	private void load() {
+		int begin = (half? 0 : HALFSIZE);
+		int read = 0;
+		try { read = stream.read(buffer,begin,HALFSIZE); }
+		catch(IOException ex) {}
+		if(read < HALFSIZE) {
+			for(int i=read; i<HALFSIZE; i++) buffer[begin+i] = 0;
+		}
+		int prev = (half? SIZE-1 : HALFSIZE-1);
+		int newrow = row[prev];
+		int newcolumn = column[prev]+1;
+		if(buffer[prev] == '\n') { newrow++; newcolumn = 0; }
+		for(int i=begin; i<begin+HALFSIZE; i++){
+			row[i] = newrow;
+			column[i] = newcolumn;
+			newcolumn++;
+			if(buffer[i] == '\n') { newrow++; newcolumn = 0; }
+		}
+		half  = !half;
+	}
 	
 	/**
-	 * Producto "*"
+	 * Obtiene el siguiente car�cter del flujo de entrada.
+	 * El m�todo es responsable de cargar un nuevo trozo del
+	 * buffer cuando sea necesario
+	 * @return Siguiente car�cter
 	 */
-	public int PROD = 61;
+	public char getNextChar() {
+		index++;
+		if(index==HALFSIZE && !half) load();
+		else if(index == SIZE && half) { index=0; load(); }
+		else if(index == SIZE) { index = 0; }
+		return (char) buffer[index];
+	}
 	
 	/**
-	 * Divisi�n "/"
+	 * Obtiene el n�mero de fila correspondiente al �ltimo car�cter leido
+	 * @return N�mero de fila
 	 */
-	public int DIV = 62;
+	public int getRow() {
+		return row[index];
+	}
 	
 	/**
-	 * M�dulo "%"
+	 * Obtiene el n�mero de columna correspondiente al �ltimo car�cter leido
+	 * @return N�mero de columna
 	 */
-	public int MOD = 63;
+	public int getColumn() {
+		return column[index];
+	}
+	
+	/**
+	 * Retrocede un n�mero de caracteres en el flujo de entrada
+	 * @param disp N�mero de caracteres a retroceder
+	 */
+	public void retract(int disp) {
+		index -= disp;
+		if(index <0) index += SIZE;
+	}
 }

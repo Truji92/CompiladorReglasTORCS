@@ -1,6 +1,6 @@
 package ast.structs;
 
-import ast.SemanticException;
+import parser.SemanticException;
 
 import java.util.Hashtable;
 import java.util.Stack;
@@ -12,8 +12,11 @@ public class SymbolTable {
 
     private Stack< Hashtable<String, Variable> > ambitos;
 
+    private Hashtable<String, Declaration> globalDeclarations;
+
     public SymbolTable() {
         ambitos = new Stack< Hashtable<String, Variable> >();
+        globalDeclarations = new Hashtable<String, Declaration>();
         Hashtable ambitoGlobal = new Hashtable<String, Variable>();
         ambitos.push(ambitoGlobal);
     }
@@ -48,6 +51,16 @@ public class SymbolTable {
         Hashtable<String, Variable> contexto = ambitos.peek();
         if (contexto.containsKey(name))
             return contexto.get(name);
+        else return null;
+    }
+
+    public void addDeclaration(String name, Declaration declaration){
+        globalDeclarations.put(name, declaration);
+    }
+
+    public Declaration getGlobalDeclaration(String name) {
+        if(globalDeclarations.containsKey(name))
+            return globalDeclarations.get(name);
         else return null;
     }
 }

@@ -1,4 +1,4 @@
-//------------------------------------------------------------------//
+package parser;//------------------------------------------------------------------//
 //                        COPYRIGHT NOTICE                          //
 //------------------------------------------------------------------//
 // Copyright (c) 2008, Francisco Jos� Moreno Velo                   //
@@ -49,91 +49,112 @@
 //------------------------------------------------------------------//
 
 
+import java.io.*;
+
 /**
- * Clase que describe un componente l�xico
- *  
- * * @author Francisco Jos� Moreno Velo
+ * Clase que desarrolla el funcionamiento de una M�quina Discriminadora
+ * Determinista
+ * 
+ * @author Francisco Jos� Moreno Velo
  *
  */
-public class Token {
-	
-	/**
-	 * Constante que identifica la categor�a l�xica de final de entrada
-	 */
-	public static final int EOF = 0;
-	
-	/**
-	 * Tipo de componente l�xico.
-	 * Identificador de la categor�a l�xica del componente.
-	 */
-	private int kind;
-	
-	/**
-	 * Lexema que da origen al componente
-	 */
-	private String lexeme;
-	
-	/**
-	 * N�mero de fila en la que se encuentra el inicio del componente
-	 */
-	private int row;
-	
-	/**
-	 * N�mero de columna en la que se encuentra el inicio del componente
-	 */
-	private int column;
-	
+public abstract class Lexer {
 
 	/**
+	 * Flujo de entrada que permite el retroceso
+	 */
+	private BufferedCharStream stream;
+	
+	/**
+	 * Transiciones del aut�mata de la m�quina
+	 * 
+	 * @param state Estado inicial
+	 * @param symbol S�mbolo del alfabeto
+	 * @return Estado final
+	 */
+	protected abstract int transition(int state, char symbol);
+	
+	/**
+	 * Verifica si un estado es final
+	 * 
+	 * @param state Estado
+	 * @return true, si el estado es final
+	 */
+	protected abstract boolean isFinal(int state);
+	
+	/**
+	 * Genera el componente l�xico correspondiente al estado final y
+	 * al lexema encontrado. Devuelve null si la acci�n asociada al
+	 * estado final es omitir (SKIP).
+	 * 
+	 * @param state Estado final alcanzado
+	 * @param lexeme Lexema reconocido
+	 * @param row Fila de comienzo del lexema
+	 * @param column Columna de comienzo del lexema
+	 * @return Componente l�xico correspondiente al estado final y al lexema
+	 */
+	protected abstract Token getToken(int state, String lexeme, int row, int column);
+	
+	/**
 	 * Constructor
-	 * @param kind Identificador de la categor�a l�xica
-	 * @param lexeme Lexema que origina el componente
-	 * @param row Fila en la que comienza el componente
-	 * @param column Columna en la que comienza el componente
+	 * @param filename Nombre del fichero fuente
+	 * @throws IOException En caso de problemas con el flujo de entrada
 	 */
-	public Token(int kind, String lexeme, int row, int column) {
-		this.kind = kind;
-		this.lexeme = lexeme;
-		this.row = row;
-		this.column = column;
+	public Lexer(String filename) throws IOException {
+		this.stream = new BufferedCharStream(new File(filename));
 	}
 	
 	/**
-	 * Obtiene el identificador de categor�a
-	 * @return Tipo de componente
+	 * Obtiene el siguiente componente l�xico del flujo de entrada
+	 * @return Siguiente componente l�xico
 	 */
-	public int getKind() {
-		return this.kind;
+	public Token getNextToken() {
+		Token nextToken = tokenize();
+		while(nextToken == null) nextToken = tokenize();
+		return nextToken;
 	}
 	
 	/**
-	 * Obtiene el lexema del componente
-	 * @return Lexema del componente
+	 * Cierra el flujo de entrada
 	 */
-	public String getLexeme() {
-		return this.lexeme;
+	public void close() {
+		this.stream.close();
 	}
 	
 	/**
-	 * Obtiene la fila de inicio del componente
-	 * @return Fila de inicio del componente
+	 * Ejecuta la m�quina discriminadora determinista para extaer el siguiente token
+	 * de la cadena de entrada. Si el lexema extraido corresponde a un blanco o
+	 * comentario el token devuelto ser� nulo.
+	 * 
+	 * @return
 	 */
-	public int getRow() {
-		return this.row;
-	}
-	
-	/**
-	 * Obtiene la columna de inicio del componente
-	 * @return Columna de inicio del componente
-	 */
-	public int getColumn() {
-		return this.column;
-	}
-	
-	/**
-	 * Obtiene una descripci�n del Token
-	 */
-	public String toString() {
-		return "[Row: "+row+"][Column: "+column+"][Kind: "+kind+"] "+lexeme;
+	private Token tokenize() {
+		int finalState = -1;
+		StringBuffer lexeme = new StringBuffer();
+		StringBuffer tainting = new StringBuffer();
+		char newChar = stream.getNextChar();
+		int state = transition(0,newChar);
+		int row = stream.getRow();
+		int column = stream.getColumn();
+		while(state!=-1 && newChar != '\0') {
+			tainting.append(newChar);
+			if(isFinal(state)) {
+				finalState = state;
+				lexeme.append(tainting);
+				tainting.delete(0,tainting.length());
+			}
+			newChar = stream.getNextChar();
+			state = transition(state,newChar);
+		}
+		if(finalState != -1) {
+			stream.retract(1+tainting.length());
+			return getToken(finalState,lexeme.toString(),row,column);
+		} else if(newChar != '\0') {
+			stream.retract(tainting.length());
+			throw new LexicalError(newChar,row,column);
+		} else {
+			stream.retract(1);
+			return new Token(Token.EOF,"",row,column);
+		}	
 	}
 }

@@ -32,4 +32,13 @@ public class Variable implements Type {
     public boolean equals(String id) {
         return name.equals(id);
     }
+
+    public static boolean checkMatchingType(int varType, int expType) {
+        if (varType == DOUBLE_TYPE){
+            if (expType == INT_TYPE || expType == DOUBLE_TYPE)
+                return true;
+            else return false;
+        }
+        else return varType == expType;
+    }
 }
