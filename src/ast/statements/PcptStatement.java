@@ -7,4 +7,5 @@ public abstract class PcptStatement extends Statement{
     public PcptStatement(int type) {
         super(type);
     }
+    public abstract boolean returns();
 }

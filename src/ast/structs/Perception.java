@@ -23,6 +23,10 @@ public class Perception extends Method {
         this.body = body;
     }
 
+    public boolean checkReturn() {
+        return body.returns();
+    }
+
     @Override
     public String genJavaCode() {
         String javaCode = "private boolean "+name+"(SensorModel sensors"+genArgumentsCode()+")";

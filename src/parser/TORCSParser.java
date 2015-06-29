@@ -64,17 +64,16 @@ public class TORCSParser implements TokenConstants {
 
 	private TORCSLexer lexer;
 
-	private Token nextToken;
+    private Token nextToken;
 
     private SymbolTable symbolTable;
 
-
 	public boolean parse(String filename) throws Exception{
 		try {
-            this.symbolTable = new SymbolTable();
 			this.lexer = new TORCSLexer(filename);
-			this.nextToken = lexer.getNextToken();
-			Controller ASA = parseController();
+            this.nextToken = lexer.getNextToken();
+            this.symbolTable = new SymbolTable(this);
+            Controller ASA = parseController();
             System.out.println(ASA.genJavaCode(filename));
             return nextToken.getKind() == EOF;
 		} catch (Exception ex) {
@@ -103,6 +102,7 @@ public class TORCSParser implements TokenConstants {
             return lex;
         } else throw new SintaxException(nextToken,kind);
 	}
+
 
     private Controller parseController() throws SintaxException, SemanticException {
         switch (nextToken.getKind()) {
@@ -177,7 +177,7 @@ public class TORCSParser implements TokenConstants {
                 if(Variable.checkMatchingType(type, lit.getType()))
                     return new InnerDecl(innerVar , lit);
                 else
-                    throw new SemanticException(nextToken); //TODO typeMissMatch
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
             default: {
                 int[] expected = {INNER};
                 throw new SintaxException(nextToken, expected);
@@ -222,7 +222,10 @@ public class TORCSParser implements TokenConstants {
                 per.setBody(body);
 
                 symbolTable.deleteContext();
-                return per;
+
+                if (per.checkReturn())
+                    return per;
+                else throw new SemanticException(SemanticException.PERCEPTION_DOESNT_RETURN, nextToken, name);
             default: {
                 int[] expected = {PERCEPTION};
                 throw new SintaxException(nextToken, expected);
@@ -651,7 +654,7 @@ public class TORCSParser implements TokenConstants {
 
                 if(Variable.checkMatchingType(type, expression.getType()))
                     return expression;
-                else throw new SemanticException(nextToken); //TODO typeMissmatch
+                else throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
             case SEMICOLON:
                 return null;
             default: {
@@ -668,7 +671,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if(condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(nextToken); // TODO TYPEEES
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
                 match(RPAREN);
                 PcptStatement thenCode = parsePcptStatement();
                 PcptStatement elseCode = PcptElse();
@@ -711,7 +714,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if (condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(nextToken); //TODO typeeee
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
                 match(RPAREN);
 
                 PcptStatement whileCode = parsePcptStatement();
@@ -729,12 +732,14 @@ public class TORCSParser implements TokenConstants {
                 String name = match(IDENTIFIER);
                 Variable var = symbolTable.getVariable(name);
                 if (var == null)
-                    throw new SemanticException(nextToken); //TODO Not Declared Var
+                    throw new SemanticException(SemanticException.VAR_NOT_DECLARED, nextToken);
+                else if (var.isReadOnly())
+                    throw new SemanticException(SemanticException.ONLY_READ_VAR, nextToken, name);
                 match(ASSIGN);
                 Expression expression = parseExpr();
                 match(SEMICOLON);
                 if (Variable.checkMatchingType(var.getType(), expression.getType()))
-                    throw new SemanticException(nextToken); //TODO type agaaain
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
                 else return new PcptAssignStm(var, expression);
             default: {
                 int[] expected = {IDENTIFIER};
@@ -842,7 +847,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if (condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(nextToken); //TODO type
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
                 match(RPAREN);
 
                 ActStatement thenCode = parseActStatement();
@@ -889,7 +894,7 @@ public class TORCSParser implements TokenConstants {
                 match(LPAREN);
                 Expression condition = parseExpr();
                 if (condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(nextToken); //TODO types
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken); //TODO types
                 match(RPAREN);
                 ActStatement whileCode = parseActStatement();
 
@@ -907,13 +912,15 @@ public class TORCSParser implements TokenConstants {
                 String name = match(IDENTIFIER);
                 Variable var = symbolTable.getVariable(name);
                 if (var == null)
-                    throw new SemanticException(nextToken); //TODO not declared
+                    throw new SemanticException(SemanticException.VAR_NOT_DECLARED, nextToken);
+                else if (var.isReadOnly())
+                    throw new SemanticException(SemanticException.ONLY_READ_VAR, nextToken, name);
                 match(ASSIGN);
                 Expression assign = parseExpr();
                 match(SEMICOLON);
                 if (Variable.checkMatchingType(var.getType(), assign.getType()))
                     return new ActAssignStm(var, assign);
-                else throw new SemanticException(nextToken); //TODO type misss
+                else throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
             case GEAR:
             case ACCELERATE:
             case BRAKE:
@@ -924,7 +931,7 @@ public class TORCSParser implements TokenConstants {
                 match(SEMICOLON);
                 if (Variable.checkMatchingType(outVar.getType(), outExpression.getType()))
                     return new ActAssignStm(outVar, outExpression);
-                else throw new SemanticException(nextToken); //TODO type
+                else throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
             default: {
                 int[] expected = {IDENTIFIER, GEAR, ACCELERATE, BRAKE, STEERING};
                 throw new SintaxException(nextToken, expected);
@@ -987,7 +994,7 @@ public class TORCSParser implements TokenConstants {
                 //END PRI(EXPR)
                 Expression condition = parseExpr();
                 if(condition.getType() != Expression.BOOLEAN_TYPE)
-                    throw new SemanticException(nextToken); //TODO type
+                    throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
                 match(ARROW);
                 ActionCallExpression firstActionCall = parseActionCall();
                 List<ActionCallExpression> othersActionCall = parseMoreActionCall();
@@ -1040,11 +1047,11 @@ public class TORCSParser implements TokenConstants {
                 String callName = Method.createTypedName(name, parameters);
                 Declaration call = symbolTable.getGlobalDeclaration(callName);
                 if (call == null)
-                    throw new SemanticException(nextToken); //TODO not declared
+                    throw new SemanticException(SemanticException.NO_EXISTE_ACCION, nextToken);
                 else if (call instanceof Action)
                     return new ActionCallExpression( (Action) call, new CallParameters(parameters));
                 else
-                    throw new SemanticException(nextToken); //TODO not correct signature
+                    throw new SemanticException(SemanticException.WRONG_SIGNATURE, nextToken);
             default: {
                 int[] expected = {IDENTIFIER};
                 throw new SintaxException(nextToken, expected);
@@ -1183,6 +1190,7 @@ public class TORCSParser implements TokenConstants {
             case OR:
                 match(OR);
                 Expression secondExpression = parseAndExpr();
+
                 Expression newFirst = new BinaryExpression(Type.BOOLEAN_TYPE, BinaryExpression.OR, firsExpression, secondExpression);
 
                 return parseListOrExpr(newFirst);
@@ -1723,7 +1731,7 @@ public class TORCSParser implements TokenConstants {
             case DIV:
             case MOD:
                 Variable var = symbolTable.getVariable(name);
-                if (var == null) throw new SemanticException(nextToken); //TODO not declared
+                if (var == null) throw new SemanticException(SemanticException.VAR_NOT_DECLARED, nextToken);
                 else return new VariableExpression(var);
             default: {
                 int[] expected = {LPAREN, RPAREN, SEMICOLON, ARROW, COMMA, OR, AND, EQ, NE,
@@ -1744,11 +1752,11 @@ public class TORCSParser implements TokenConstants {
                 Declaration call = symbolTable.getGlobalDeclaration(callName);
 
                 if (call == null)
-                    throw new SemanticException(nextToken); //TODO not declared
+                    throw new SemanticException(SemanticException.NO_EXISTE_PERCEPCION, nextToken);
                 else if (call instanceof Perception)
                     return new PerceptionCallExpression( (Perception) call, new CallParameters(parameters));
                 else
-                    throw new SemanticException(nextToken); //TODO Wrong signature
+                    throw new SemanticException(SemanticException.WRONG_SIGNATURE, nextToken);
 
             default: {
                 int[] expected = {LPAREN};
@@ -1757,8 +1765,12 @@ public class TORCSParser implements TokenConstants {
         }
     }
 
-
-
     private static final boolean readOnly = true;
+
+
+
+    public Token getNextToken() {
+        return nextToken;
+    }
 
 }

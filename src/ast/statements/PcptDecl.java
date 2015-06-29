@@ -26,6 +26,11 @@ public class PcptDecl extends PcptStatement {
     }
 
     @Override
+    public boolean returns() {
+        return false;
+    }
+
+    @Override
     public String genJavaCode() {
         String javaCode = var.genJavaCode();
         if (declarationPlusAssign)

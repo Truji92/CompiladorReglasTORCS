@@ -1,6 +1,8 @@
 package ast.structs;
 
 import parser.SemanticException;
+import parser.TORCSParser;
+import parser.Token;
 
 import java.util.Hashtable;
 import java.util.Stack;
@@ -14,7 +16,10 @@ public class SymbolTable {
 
     private final Hashtable<String, Declaration> globalDeclarations;
 
-    public SymbolTable() {
+    private TORCSParser parser;
+
+    public SymbolTable(TORCSParser parser) {
+        this.parser = parser;
         ambitos = new Stack< Hashtable<String, Variable> >();
         globalDeclarations = new Hashtable<String, Declaration>();
         Hashtable ambitoGlobal = new Hashtable<String, Variable>();
@@ -34,7 +39,7 @@ public class SymbolTable {
         if (!ambitos.peek().containsKey(var.name))
             ambitos.peek().put(var.name, var);
         else
-            throw new SemanticException();
+            throw new SemanticException(SemanticException.DECLARACION_DOBLE, parser.getNextToken(), var.name);
     }
 
     public Variable getVariable(String name) {
@@ -54,8 +59,10 @@ public class SymbolTable {
         else return null;
     }
 
-    public void addDeclaration(String name, Declaration declaration){
-        globalDeclarations.put(name, declaration);
+    public void addDeclaration(String name, Declaration declaration) throws SemanticException {
+        if (globalDeclarations.containsKey(name))
+            throw new SemanticException(SemanticException.DECLARACION_DOBLE, parser.getNextToken(), name);
+        else globalDeclarations.put(name, declaration);
     }
 
     public Declaration getGlobalDeclaration(String name) {

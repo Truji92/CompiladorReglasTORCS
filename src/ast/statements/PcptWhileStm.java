@@ -25,6 +25,11 @@ public class PcptWhileStm extends PcptStatement{
     }
 
     @Override
+    public boolean returns() {
+        return false;
+    }
+
+    @Override
     public String genJavaCode() {
         return "while ("+condition.genJavaCode()+")"+code.genJavaCode();
     }

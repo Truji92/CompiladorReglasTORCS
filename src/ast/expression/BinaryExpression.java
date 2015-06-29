@@ -31,7 +31,15 @@ public class BinaryExpression extends Expression {
 
     @Override
     public String genJavaCode() {
-        return left.genJavaCode() +" "+ getJavaOperator() +" "+right.genJavaCode();
+        return left.genJavaCode()+" "+ getJavaOperator() +" "+checkParentesisJavaCodeFoExpression(right)+"";
+    }
+
+    private String checkParentesisJavaCodeFoExpression(Expression exp){
+        if (exp instanceof UnaryExpression && ((UnaryExpression)exp).getOp() != UnaryExpression.NONE)
+            return "("+exp.genJavaCode()+")";
+        else if (exp instanceof BinaryExpression )
+            return "("+exp.genJavaCode()+")";
+        else return exp.genJavaCode();
     }
 
     private String getJavaOperator() {

@@ -18,4 +18,9 @@ public class PcptReturnStm extends PcptStatement {
     public String genJavaCode() {
         return "return " + value.genJavaCode() + ";\n";
     }
+
+    @Override
+    public boolean returns() {
+        return true;
+    }
 }

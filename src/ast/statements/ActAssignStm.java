@@ -28,6 +28,6 @@ public class ActAssignStm extends ActStatement {
 
     @Override
     public String genJavaCode() {
-        return var.name +" = "+assign.genJavaCode()+";";
+        return var.genJavaCodeRef() +" = "+assign.genJavaCode()+";";
     }
 }

@@ -151,7 +151,7 @@ public class BufferedCharStream {
 	
 	/**
 	 * Obtiene el siguiente car�cter del flujo de entrada.
-	 * El m�todo es responsable de cargar un nuevo trozo del
+	 * El mtodo es responsable de cargar un nuevo trozo del
 	 * buffer cuando sea necesario
 	 * @return Siguiente car�cter
 	 */

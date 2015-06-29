@@ -6,7 +6,6 @@ import java.util.List;
  * Created by alejandro on 28/06/15.
  */
 public class Controller {
-    // TODO
 
     private final List<Declaration> declarations;
     private final Rules rules;

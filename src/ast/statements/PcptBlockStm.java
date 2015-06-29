@@ -23,6 +23,11 @@ public class PcptBlockStm extends PcptStatement {
     }
 
     @Override
+    public boolean returns() {
+        return statements.size() != 0 && statements.get(statements.size() - 1).returns();
+    }
+
+    @Override
     public String genJavaCode() {
         String javaCode = "{\n";
         for (PcptStatement statement: statements) {
