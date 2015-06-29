@@ -6,7 +6,7 @@ package ast.expression;
 public class BooleanLiteralExpression extends Literal {
 
 
-    private boolean value;
+    private final boolean value;
 
     public BooleanLiteralExpression(String lexeme) {
         super(BOOLEAN_TYPE);

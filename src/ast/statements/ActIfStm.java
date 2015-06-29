@@ -6,10 +6,10 @@ import ast.expression.Expression;
  * Created by alejandro on 28/06/15.
  */
 public class ActIfStm extends ActStatement {
-    private Expression condition;
+    private final Expression condition;
 
-    private ActStatement thenStm;
-    private ActStatement elseStm;
+    private final ActStatement thenStm;
+    private final ActStatement elseStm;
 
     public ActIfStm(Expression condition, ActStatement thenStm, ActStatement elseStm) {
         super(VOID_TYPE);

@@ -8,8 +8,8 @@ import ast.structs.Variable;
  */
 public class ActAssignStm extends ActStatement {
 
-    private Variable var;
-    private Expression assign;
+    private final Variable var;
+    private final Expression assign;
 
 
     public ActAssignStm(Variable var, Expression assign) {

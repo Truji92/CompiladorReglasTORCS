@@ -7,8 +7,8 @@ import ast.structs.Action;
  */
 public class ActionCallExpression extends Expression {
 
-    private Action action;
-    private CallParameters parameters;
+    private final Action action;
+    private final CallParameters parameters;
 
     public ActionCallExpression(Action action, CallParameters parameters) {
         super(VOID_TYPE);

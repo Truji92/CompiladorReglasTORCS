@@ -121,7 +121,7 @@ public class BufferedCharStream {
 	 */
 	public void close() {
 		try { this.stream.close(); }
-		catch(IOException ex) {}
+		catch(IOException ignored) {}
 	}
 	
 	/**
@@ -132,7 +132,7 @@ public class BufferedCharStream {
 		int begin = (half? 0 : HALFSIZE);
 		int read = 0;
 		try { read = stream.read(buffer,begin,HALFSIZE); }
-		catch(IOException ex) {}
+		catch(IOException ignored) {}
 		if(read < HALFSIZE) {
 			for(int i=read; i<HALFSIZE; i++) buffer[begin+i] = 0;
 		}

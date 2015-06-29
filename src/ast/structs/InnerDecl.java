@@ -5,7 +5,7 @@ package ast.structs;
  */
 public class InnerDecl extends Declaration {
 
-    private Variable var;
+    private final Variable var;
 
     public InnerDecl(Variable var) {
         this.var = var;

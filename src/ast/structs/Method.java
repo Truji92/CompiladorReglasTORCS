@@ -11,10 +11,10 @@ import java.util.List;
  * Created by alejandro on 28/06/15.
  */
 public class Method extends Declaration implements Type {
-    protected String name;
-    protected List<Variable> arguments;
-    protected List<Variable> localVar;
-    protected SymbolTable symboltable;
+    protected final String name;
+    protected final List<Variable> arguments;
+    protected final List<Variable> localVar;
+    protected final SymbolTable symboltable;
 
     public Method(SymbolTable symboltable, String name) {
         localVar = new LinkedList<Variable>();

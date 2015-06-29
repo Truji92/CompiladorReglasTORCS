@@ -7,9 +7,9 @@ import ast.structs.Variable;
  * Created by alejandro on 28/06/15.
  */
 public class ActDecl extends ActStatement{
-    private Variable var;
+    private final Variable var;
     private Expression assign;
-    private boolean declarationPlusAssign;
+    private final boolean declarationPlusAssign;
 
     public ActDecl(Variable var, Expression assign) {
         super(var.getType());

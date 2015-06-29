@@ -64,17 +64,17 @@ public class LexicalError extends Error {
 	/**
 	 * Car�cter origen del error l�xico
 	 */
-	private char source;
+	private final char source;
 	
 	/**
 	 * Fila en la que se encuentra el car�cter err�neo
 	 */
-	private int row;
+	private final int row;
 	
 	/**
 	 * Columna en la que se encuentra el car�cter err�neo
 	 */
-	private int column;
+	private final int column;
 	
 	/**
 	 * Constructor

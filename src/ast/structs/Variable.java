@@ -8,7 +8,7 @@ import ast.Type;
 public class Variable implements Type {
     public final String name;
     private int type;
-    private boolean readOnly;
+    private final boolean readOnly;
 
     public Variable(String name, int type, boolean readOnly) {
         this.name = name;
@@ -35,9 +35,7 @@ public class Variable implements Type {
 
     public static boolean checkMatchingType(int varType, int expType) {
         if (varType == DOUBLE_TYPE){
-            if (expType == INT_TYPE || expType == DOUBLE_TYPE)
-                return true;
-            else return false;
+            return expType == INT_TYPE || expType == DOUBLE_TYPE;
         }
         else return varType == expType;
     }

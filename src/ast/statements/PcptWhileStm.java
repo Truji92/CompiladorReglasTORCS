@@ -7,8 +7,8 @@ import ast.expression.Expression;
  */
 public class PcptWhileStm extends PcptStatement{
 
-    private Expression condition;
-    private PcptStatement code;
+    private final Expression condition;
+    private final PcptStatement code;
 
     public PcptWhileStm(Expression condition, PcptStatement code) {
         super(VOID_TYPE);

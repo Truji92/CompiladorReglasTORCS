@@ -7,7 +7,7 @@ import ast.Type;
  */
 public abstract class Expression implements Type{
 
-    private int type;
+    private final int type;
 
     public Expression(int type) {
         this.type = type;

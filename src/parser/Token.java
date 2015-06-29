@@ -66,22 +66,22 @@ public class Token {
 	 * Tipo de componente l�xico.
 	 * Identificador de la categor�a l�xica del componente.
 	 */
-	private int kind;
+	private final int kind;
 	
 	/**
 	 * Lexema que da origen al componente
 	 */
-	private String lexeme;
+	private final String lexeme;
 	
 	/**
 	 * N�mero de fila en la que se encuentra el inicio del componente
 	 */
-	private int row;
+	private final int row;
 	
 	/**
 	 * N�mero de columna en la que se encuentra el inicio del componente
 	 */
-	private int column;
+	private final int column;
 	
 
 	/**

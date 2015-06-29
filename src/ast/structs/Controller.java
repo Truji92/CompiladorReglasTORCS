@@ -8,8 +8,8 @@ import java.util.List;
 public class Controller {
     // TODO
 
-    private List<Declaration> declarations;
-    private Rules rules;
+    private final List<Declaration> declarations;
+    private final Rules rules;
 
 
     public Controller(List<Declaration> declarations, Rules rules) {

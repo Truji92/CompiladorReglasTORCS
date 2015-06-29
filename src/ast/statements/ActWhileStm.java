@@ -7,8 +7,8 @@ import ast.expression.Expression;
  */
 public class ActWhileStm extends ActStatement {
 
-    private Expression condition;
-    private ActStatement code;
+    private final Expression condition;
+    private final ActStatement code;
 
     public ActWhileStm(Expression condition, ActStatement code) {
         super(VOID_TYPE);

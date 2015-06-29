@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class CallParameters  {
 
-    private List<Expression> parameters;
+    private final List<Expression> parameters;
 
     public CallParameters(List<Expression> parameters) {
         this.parameters = parameters;

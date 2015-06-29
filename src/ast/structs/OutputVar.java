@@ -5,10 +5,10 @@ package ast.structs;
  */
 public class OutputVar extends Variable {
 
-    public static int GEAR = 33;
-    public static int ACCELERATE = 34;
-    public static int BRAKE = 35;
-    public static int STEERING = 36;
+    public static final int GEAR = 33;
+    public static final int ACCELERATE = 34;
+    public static final int BRAKE = 35;
+    public static final int STEERING = 36;
 
     private final int id;
 

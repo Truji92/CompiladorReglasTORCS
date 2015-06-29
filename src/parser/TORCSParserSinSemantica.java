@@ -78,8 +78,7 @@ public class TORCSParserSinSemantica implements TokenConstants {
 			this.lexer = new TORCSLexer(filename);
 			this.nextToken = lexer.getNextToken();
 			Controller();
-			if(nextToken.getKind() == EOF) return true;
-			else return false;
+            return nextToken.getKind() == EOF;
 		} catch (Exception ex) {
 			System.out.println(ex.toString());
 			return false;

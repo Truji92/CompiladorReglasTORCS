@@ -70,17 +70,17 @@ public class TORCSParser implements TokenConstants {
 
 
 	public boolean parse(String filename) throws Exception{
-		//try {
+		try {
             this.symbolTable = new SymbolTable();
             //TODO initsymbols
 			this.lexer = new TORCSLexer(filename);
 			this.nextToken = lexer.getNextToken();
 			Controller ASA = parseController();
             return nextToken.getKind() == EOF;
-		//} catch (Exception ex) {
-//			System.out.println(ex.toString());
-//			return false;
-//		}
+		} catch (Exception ex) {
+			System.out.println(ex.toString());
+		    return false;
+		}
 	}
 
 
@@ -113,8 +113,7 @@ public class TORCSParser implements TokenConstants {
                 List<Declaration> declarations = parseListDeclaration();
                 //TODO Check names declarations
                 Rules rules = parseRules();
-                Controller controller = new Controller(declarations, rules);
-                return controller;
+                return new Controller(declarations, rules);
             default: {
                 int[] expected = {INNER, PERCEPTION, ACTION, RULES};
                 throw new SintaxException(nextToken, expected);
@@ -685,8 +684,7 @@ public class TORCSParser implements TokenConstants {
         switch (nextToken.getKind()) {
             case ELSE:
                 match(ELSE);
-                PcptStatement elseCode = parsePcptStatement();
-                return elseCode; // TODO CHEK CORRECT RETURN
+                return parsePcptStatement(); // TODO CHEK CORRECT RETURN
             case INT:
             case BOOLEAN:
             case DOUBLE:
@@ -1167,9 +1165,8 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_17:
             case SENSOR_18:
                 Expression firstExpression = parseAndExpr();
-                Expression secondExpression = parseListOrExpr(firstExpression);
 
-                return secondExpression;
+                return parseListOrExpr(firstExpression);
             default: {
                 int[] expected = {NOT, MINUS, PLUS, INTEGER_LITERAL, DOUBLE_LITERAL, TRUE, FALSE, IDENTIFIER,
                         LPAREN, GEAR, SPEED, ANGLE, POSITION, RPM, SENSOR_0, SENSOR_1, SENSOR_2, SENSOR_3,
@@ -1307,9 +1304,8 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_17:
             case SENSOR_18:
                 Expression firstExpression = parseSumExpr();
-                Expression secondExpression = parseOptionalRelOp(firstExpression);
 
-                return secondExpression;
+                return parseOptionalRelOp(firstExpression);
             default: {
                 int[] expected = {NOT, MINUS, PLUS, INTEGER_LITERAL, DOUBLE_LITERAL, TRUE, FALSE, IDENTIFIER,
                         LPAREN, GEAR, SPEED, ANGLE, POSITION, RPM, SENSOR_0, SENSOR_1, SENSOR_2, SENSOR_3,
@@ -1412,9 +1408,8 @@ public class TORCSParser implements TokenConstants {
                 int unOp = parseUnOP();
                 Expression firstExpressionSinOP = parseProdExpr();
                 Expression firstExpression = new UnaryExpression(firstExpressionSinOP.getType(), unOp, firstExpressionSinOP); //TODO chek tipos operandos
-                Expression secondExpression = parseListSumOp(firstExpression);
 
-                return secondExpression;
+                return parseListSumOp(firstExpression);
             default: {
                 int[] expected  = {NOT, MINUS, PLUS, INTEGER_LITERAL, DOUBLE_LITERAL, TRUE, FALSE, IDENTIFIER,
                         LPAREN, GEAR, SPEED, ANGLE, POSITION, RPM, SENSOR_0, SENSOR_1, SENSOR_2, SENSOR_3,
@@ -1556,8 +1551,7 @@ public class TORCSParser implements TokenConstants {
             case SENSOR_17:
             case SENSOR_18:
                 Expression firstExpression = parseFactor();
-                Expression secondExpression = parseListFactor(firstExpression);
-                return secondExpression;
+                return parseListFactor(firstExpression);
             default: {
                 int[] expected  = {INTEGER_LITERAL, DOUBLE_LITERAL, TRUE, FALSE, IDENTIFIER,
                         LPAREN, GEAR, SPEED, ANGLE, POSITION, RPM, SENSOR_0, SENSOR_1, SENSOR_2, SENSOR_3,

@@ -8,7 +8,7 @@ public class SemanticException extends Exception {
 
     private Token token;
 
-    private String msg;
+    private final String msg;
 
     public SemanticException(Token token) {
         this.token = token;

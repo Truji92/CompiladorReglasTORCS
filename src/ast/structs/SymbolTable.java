@@ -10,9 +10,9 @@ import java.util.Stack;
  */
 public class SymbolTable {
 
-    private Stack< Hashtable<String, Variable> > ambitos;
+    private final Stack< Hashtable<String, Variable> > ambitos;
 
-    private Hashtable<String, Declaration> globalDeclarations;
+    private final Hashtable<String, Declaration> globalDeclarations;
 
     public SymbolTable() {
         ambitos = new Stack< Hashtable<String, Variable> >();

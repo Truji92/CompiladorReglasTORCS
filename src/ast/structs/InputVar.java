@@ -6,33 +6,33 @@ package ast.structs;
 public class InputVar extends Variable {
 
 
-    public static int SENSOR_0 = 0;
-    public static int SENSOR_1 = 1;
-    public static int SENSOR_2 = 2;
-    public static int SENSOR_3 = 3;
-    public static int SENSOR_4 = 4;
-    public static int SENSOR_5 = 5;
-    public static int SENSOR_6 = 6;
-    public static int SENSOR_7 = 7;
-    public static int SENSOR_8 = 8;
-    public static int SENSOR_9 = 9;
-    public static int SENSOR_10 = 10;
-    public static int SENSOR_11 = 11;
-    public static int SENSOR_12 = 12;
-    public static int SENSOR_13 = 13;
-    public static int SENSOR_14 = 14;
-    public static int SENSOR_15 = 15;
-    public static int SENSOR_16 = 16;
-    public static int SENSOR_17 = 17;
-    public static int SENSOR_18 = 18;
-    public static int GEAR = 19;
-    public static int SPEED = 20;
-    public static int ANGLE = 21;
-    public static int POSITION = 22;
-    public static int RPM = 23;
+    public static final int SENSOR_0 = 0;
+    public static final int SENSOR_1 = 1;
+    public static final int SENSOR_2 = 2;
+    public static final int SENSOR_3 = 3;
+    public static final int SENSOR_4 = 4;
+    public static final int SENSOR_5 = 5;
+    public static final int SENSOR_6 = 6;
+    public static final int SENSOR_7 = 7;
+    public static final int SENSOR_8 = 8;
+    public static final int SENSOR_9 = 9;
+    public static final int SENSOR_10 = 10;
+    public static final int SENSOR_11 = 11;
+    public static final int SENSOR_12 = 12;
+    public static final int SENSOR_13 = 13;
+    public static final int SENSOR_14 = 14;
+    public static final int SENSOR_15 = 15;
+    public static final int SENSOR_16 = 16;
+    public static final int SENSOR_17 = 17;
+    public static final int SENSOR_18 = 18;
+    public static final int GEAR = 19;
+    public static final int SPEED = 20;
+    public static final int ANGLE = 21;
+    public static final int POSITION = 22;
+    public static final int RPM = 23;
 
 
-    private int id;
+    private final int id;
 
     public InputVar(String name) {
         super(name, DOUBLE_TYPE, true);

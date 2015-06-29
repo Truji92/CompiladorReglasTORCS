@@ -6,7 +6,7 @@ import ast.Type;
  * Created by alejandro on 28/06/15.
  */
 public abstract class Statement implements Type {
-    private int type;
+    private final int type;
 
     public Statement(int type) {
         this.type = type;

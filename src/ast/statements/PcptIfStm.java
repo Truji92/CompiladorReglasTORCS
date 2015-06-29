@@ -7,10 +7,10 @@ import ast.expression.Expression;
  */
 public class PcptIfStm extends PcptStatement {
 
-    private Expression condition;
+    private final Expression condition;
 
-    private PcptStatement thenStm;
-    private PcptStatement elseStm;
+    private final PcptStatement thenStm;
+    private final PcptStatement elseStm;
 
     public PcptIfStm(Expression condition, PcptStatement thenStm, PcptStatement elseStm) {
         super(VOID_TYPE);

@@ -9,8 +9,8 @@ import java.util.List;
  * Created by alejandro on 28/06/15.
  */
 public class Rule {
-    private Expression expression;
-    private List<ActionCallExpression> actions;
+    private final Expression expression;
+    private final List<ActionCallExpression> actions;
 
     public Rule(Expression expression, List<ActionCallExpression> actions) {
         this.expression = expression;

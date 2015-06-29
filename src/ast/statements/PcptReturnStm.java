@@ -7,7 +7,7 @@ import ast.expression.BooleanLiteralExpression;
  */
 public class PcptReturnStm extends PcptStatement {
 
-    private BooleanLiteralExpression value;
+    private final BooleanLiteralExpression value;
 
     public PcptReturnStm(BooleanLiteralExpression value) {
         super(BOOLEAN_TYPE);

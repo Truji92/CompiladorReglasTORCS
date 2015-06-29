@@ -8,9 +8,9 @@ import ast.structs.Variable;
  */
 public class PcptDecl extends PcptStatement {
 
-    private Variable var;
+    private final Variable var;
     private Expression assign;
-    private boolean declarationPlusAssign;
+    private final boolean declarationPlusAssign;
 
     public PcptDecl(Variable var, Expression assign) {
         super(var.getType());
