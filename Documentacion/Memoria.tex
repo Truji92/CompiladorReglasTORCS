@@ -6,6 +6,13 @@
 \usepackage{anysize}
 \usepackage{verbatim}
 \usepackage{float}
+\usepackage{booktabs} % To thicken table lines
+
+%%% TABLAS
+\usepackage{tabularx}
+\newcolumntype{b}{X}
+\newcolumntype{B}{>{\hsize=.5\hsize}X}
+\newcolumntype{s}{>{\hsize=.14\hsize}X}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PARA CODIGO %%%%%%%%%%%%%%
 \usepackage{color}
@@ -61,9 +68,9 @@ backgroundcolor=\color{gray75},
 \marginsize{3cm}{2cm}{2cm}{2cm}
 
 %Portada
-\title{\textbf{\huge{TITUTLO}}}
+\title{\textbf{\huge{Compilador de lenguaje de reglas para TORCS}}}
 \author{Alejandro Trujillo Caballero}
-\date{FECHA}
+\date{30 de junio de 2015}
 
 \usepackage{graphicx}
 \begin{document}
@@ -77,6 +84,174 @@ backgroundcolor=\color{gray75},
 
 \section{Introducción}
 
+El objetivo de esta práctica es la creación de un compilador que a partir de un lenguaje de reglas genere código Java
+capaz de funcionar como un controlador de un piloto del simulador de carreras TORCS.
 
+
+Para ello se analizara la especificación léxica y sintáctica del lenguaje, asi como su semántica y de forma escalonada se
+codificarán cada una de las partes del compilador: analizador léxico, sintáctico, semántico, generación del árbol de sintaxis abstracta
+y por último generación de código Java.
+
+\section{Analizador Léxico}
+\subsection{Especificación léxica}
+El lenguaje incluye un total de 39 palabras reservadas:
+perception, action, rules, inner, int, double, boolean, true, false, speed, angle, position, rpm, sensor0, sensor1 ... sensor18, gear, accelerate, brake, steering, if, else y while.
+
+Caracteres especiales y operadores:
+
+\medskip
+\begin{table}[H]
+\caption{Elementos sintácticos del lenguaje}
+\begin{tabularx}{\textwidth}{Bb}
+Función & Operador\\ \hline \hline
+Separadores &  \{ \hspace{0.5cm} \} \hspace{0.5cm} -> \hspace{0.5cm} , \hspace{0.5cm} ; \hspace{0.5cm} ) \hspace{0.5cm} ( \\ \hline
+Operadores aritméticos & + \hspace{0.5cm} - \hspace{0.5cm} * \hspace{0.5cm} / \hspace{0.5cm} \% \\ \hline
+Operadores lógicos & \& \hspace{0.5cm} | \hspace{0.5cm} ! \hspace{0.5cm} \\ \hline
+Operadores relacionaes & < \hspace{0.5cm} >  \hspace{0.5cm} <= \hspace{0.5cm} >= \hspace{0.5cm} <> \hspace{0.5cm} =\\ \hline
+Asignación &  <- \\ \hline
+Comentario & \# \\
+\end{tabularx}
+\end{table}
+
+Los identificadores y literales se definen como:
+
+\medskip
+\begin{table}[H]
+\caption{Identificadores y Literales}
+\begin{tabularx}{\textwidth}{Bb}
+Elemento & Expresión regular\\ \hline \hline
+Identificadores & [\_ | [a-z] | [A-Z]] ( [\_| [a-z] | [A-Z] | [0-9]] )*  \\ \hline
+Enteros & [1-9] [0-9]* \\ \hline
+Double &  [0 | [1-9][0-9]*].[0-9]+  \\
+\end{tabularx}
+\end{table}
+
+\subsection{Autómata finito determinista}
+
+A continuación se encuentran los diagramas del autómata por el que se rige la máquina discriminadora determinista
+del analizador léxico:
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{./DiagramasAutomata/img/BlancosYComentarios.png}
+\caption{Blancos y comentarios.} \label{fig:blancosycomentarios}
+\end{figure}
+
+Estado final 2: Fin de comentario.
+
+Estado final 3: Espacio blanco.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{./DiagramasAutomata/img/Identificadores.png}
+\caption{Identificadores.} \label{fig:ident}
+\end{figure}
+
+Estado final 4: Identificador. Antes de lanzar el token de identificador, se comprueba si el lexema reconocido pertenece a
+una palabra reservada, en caso de que sea así se utilizará el token de palabra reservada en su lugar.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{./DiagramasAutomata/img/NumerosBueno.png}
+\caption{Constantes numéricas.} \label{fig:números}
+\end{figure}
+
+Estado final 5: Número entero.
+
+Estado final 6: Cero.
+
+Estado final 8: Número decimal (Double).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{./DiagramasAutomata/img/separadoresBueno.png}
+\caption{Separadores.} \label{fig:sepa}
+\end{figure}
+
+Estado final 9: Apertura de llave.
+
+Estado final 10: Cierre de llave.
+
+Estado final 11: Apertura de parentesis.
+
+Estado final 12: Cierre de parentesis.
+
+Estado final 13: Separador coma.
+
+Estado final 14: Separador punto y coma.
+
+Estado final 15: Operador arirmético menos.
+
+Estado final 16: Separador flecha.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{./DiagramasAutomata/img/OperadoresLogYAsig.png}
+\caption{Operadores lógicos y de asignación.} \label{fig:Log}
+\end{figure}
+
+Estados finales 17-25: Operadores relacionales o lógicos.
+
+Estado final 26: Operador de asignación.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\textwidth]{./DiagramasAutomata/img/OperadoresAritmBueno.png}
+\caption{Operadores aritméticos.} \label{fig:aritm}
+\end{figure}
+
+Estados finales 27-30: Operadores aritméticos.
+
+\subsection{Código del analizador léxico}
+
+El código del analizador sigue la misma estructura que el del lenguaje Tinto en la práctica dos de la asignatura.
+
+Las clases que lo implementan son: TORCSLexer y TokenConstants adjuntas (junto con el resto del código) a esta memoria.
+
+
+\section{Analizador sintáctico}
+
+\subsection{Gramática y conjuntos de predicción}
+
+A continuación se muestra una tabla con la gramática LL(1) generada para el analizador junto con los conjuntos de primeros,
+ siguientes y predicción de cada regla.
+
+ Esta misma tabla también se encuentra en un archivo de hoja de cálculo adjunto a esta memoria por si por cuestiones de
+ comodidad se desea (se recomienda) consultar en él.
+
+ %TODO gramatica
+\input{TablaGramatica}
+
+
+
+
+\subsection{Código del analizador sintáctico/semántico}
+
+En el código adjunto pueden encontrarse dos clases:
+\\ \\
+-TORCSParserSinSemantica en la que se encuentra únicamente el analizador descendente de la gramática.
+\\
+-TORCSParser en la que se encuentra el analizador descendente anterior atrubido de acciones semánticas.
+
+\section{Árbol de sintaxis abstracta}
+
+En el paquete ast dentro del código adjunto se encuentran las 38 clases que se utilizan para generar el árbol de sintaxis abstracta.
+
+De forma similar a la del lenguaje Tinto, se divide en tres paquetes:
+\\ \\
+- Structs: Contiene las estructuras mayores del lenguaje así como la tabla de simbolos.
+\\ \\
+- Statements: Contiene las clases utilizadas para definir instrucciones del lenguaje.
+\\ \\
+- Expression: Contiene las clases necesarias para describir expresiones (aritméticas, lógicas, llamadas a métodos, etc).
+
+\section{Generación de código}
+
+No existe un clase específica dedicada a la generación de código Java. Cada una de las clases que describen el ASA, contienen
+los métodos necesarios para generar el código que las describe y por tanto realizando una llamada al método genJavaCode() de
+una instancia de la clase Controller (raiz del ASA) se puede obtener el código completo.
+
+\section{Descripción de funcionamiento y pruebas}
 
 \end{document}

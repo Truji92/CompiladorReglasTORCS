@@ -18,11 +18,21 @@ public class Controller {
 
 
     public String genJavaCode(String Filename) {
+        String name = extractName(Filename);
         String javaCode =
                 "import champ2011client.*;\n" +
                         "\n" +
-                        "public class "+ extractName(Filename)+" extends Controller {\n" +
+                        "public class "+ name+" extends Controller {\n" +
                         "\n" +
+                        "\tpublic "+name+"() {\n" +
+                        "\t\t System.out.println(\"Iniciando\");\n"+
+                        "\t}\n\n"+
+                        "\tpublic void reset() {\n"+
+                        "\t\tSystem.out.println(\"Reiniciando la carrera\");\n"+
+                        "\t}\n\n"+
+                        "\tpublic void shutdown() { \n" +
+                        "\t\tSystem.out.println(\"CARRERA TERMINADA\");\n" +
+                        "\t}\n"+
                         genJavaCodeDeclarations() + "\n" +
                         rules.genJavaCode()+"\n"+
                         "}";
