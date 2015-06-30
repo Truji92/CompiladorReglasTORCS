@@ -54,10 +54,13 @@ breaklines=true,
 backgroundcolor=\color{gray75},
 }
 
-\lstdefinestyle{C}
-{language=C++,
+\lstdefinestyle{J}
+ {language=Java,
+ firstnumber=0,
+ }
+\lstdefinestyle{T}
+{language=Haskell,
 }
-
 
 %\begin{lstlisting}[style=C]
 %%codigo
@@ -88,7 +91,7 @@ El objetivo de esta práctica es la creación de un compilador que a partir de u
 capaz de funcionar como un controlador de un piloto del simulador de carreras TORCS.
 
 
-Para ello se analizara la especificación léxica y sintáctica del lenguaje, asi como su semántica y de forma escalonada se
+Para ello se analizará la especificación léxica y sintáctica del lenguaje, asi como su semántica y de forma escalonada se
 codificarán cada una de las partes del compilador: analizador léxico, sintáctico, semántico, generación del árbol de sintaxis abstracta
 y por último generación de código Java.
 
@@ -223,6 +226,7 @@ A continuación se muestra una tabla con la gramática LL(1) generada para el an
  %TODO gramatica
 \input{TablaGramatica}
 
+\newpage
 
 
 
@@ -232,7 +236,7 @@ En el código adjunto pueden encontrarse dos clases:
 \\ \\
 -TORCSParserSinSemantica en la que se encuentra únicamente el analizador descendente de la gramática.
 \\
--TORCSParser en la que se encuentra el analizador descendente anterior atrubido de acciones semánticas.
+-TORCSParser en la que se encuentra el analizador descendente anterior atribuido de acciones semánticas.
 
 \section{Árbol de sintaxis abstracta}
 
@@ -248,10 +252,198 @@ De forma similar a la del lenguaje Tinto, se divide en tres paquetes:
 
 \section{Generación de código}
 
-No existe un clase específica dedicada a la generación de código Java. Cada una de las clases que describen el ASA, contienen
+No existe una clase específica dedicada a la generación de código Java. Cada una de las clases que describen el ASA, contienen
 los métodos necesarios para generar el código que las describe y por tanto realizando una llamada al método genJavaCode() de
 una instancia de la clase Controller (raiz del ASA) se puede obtener el código completo.
 
+\newpage
 \section{Descripción de funcionamiento y pruebas}
+
+A continuación se muestran diferentes ejemplos del correcto funcionamiento del compilador así como de los controles semáticos y de errores que realiza.
+El código generado por el compilador solo esta parcialmente indentado por lo que los ejemplos de código que se muestran en esta memoria han
+sido reindentados utilizando un editor de texto.
+
+\subsection{Errores léxicos y sintácticos.}
+Por supesto, el compilador rechaza cualquier código con simbolos no pertenecientes al lenguaje o con construcciones sintácticas erroneas.
+
+Un error léxico:
+
+\lstinputlisting{./Pruebas/FalloLexico.tc}
+
+Devuelve:
+
+\begin{lstlisting}
+Exception in thread "main" Error lexico: caracter " [Fila 3, Column 12]
+\end{lstlisting}
+
+Un error sintáctico:
+
+\lstinputlisting{./Pruebas/FalloSintactico.tc}
+
+Devuelve:
+
+\begin{lstlisting}
+Sintax exception at row 4, column 2.
+  Found else
+  while expecting ;.
+\end{lstlisting}
+
+
+
+\subsection{Control de errores de tipo}
+Durante el proceso de compilación (concretamente durante la generación descendente del ASA), se realizan comprobaciones
+semánticas de tipo para evitar asignaciones a variables con tipos diferentes o utilizar como condición de un if o un while
+expresiones de tipo no booleano.
+
+Puesto que en Java existe una conversión implicita de int a double, el compilador permite la asignación de variables en coma
+ flotante con valores enteros y la comparación entre valores de tipo int y double, pero no permite asignaciones de valores
+ double a variables enteras ya que existiria perdida de información.
+
+
+Un error de tipo en un if:
+\lstinputlisting[firstnumber=0]{./Pruebas/ErrorDeTipoEnIf.tc}
+
+Devuelve:
+
+\begin{lstlisting}[style=J]
+Error en linea: 2. Tipos no compatibles.
+\end{lstlisting}
+
+
+Un error de tipo en una asignación:
+\lstinputlisting[firstnumber=0]{./Pruebas/ErrorDeAsig.tc}
+
+Devuelve:
+
+\begin{lstlisting}[style=J]
+Error en linea: 10. Tipos no compatibles.
+\end{lstlisting}
+
+
+Una asignación de un entero a un decimal no genera error:
+\lstinputlisting[firstnumber=0]{./Pruebas/DoubleIntAsign.tc}
+
+Genera:
+
+\lstinputlisting[style=J]{./Pruebas/DoubleIntAsign.java}
+
+
+\subsection{Errores de declaración}
+El compilador controla que tanto variables como percepciones y acciones se declaren antes de utilizarse utilizando la tabla de simbolos.
+
+
+Si utilizamos una variable sin declararla:
+\lstinputlisting[firstnumber=0]{./Pruebas/UsoSinDeclaracion.tc}
+
+Devuelve:
+\begin{lstlisting}[style=J]
+Error en linea: 2. Variable no declarada.
+\end{lstlisting}
+
+Si llamamos un método no declarado:
+\lstinputlisting[firstnumber=0]{./Pruebas/LlamadaSinDecl.tc}
+
+Devuelve:
+\begin{lstlisting}[style=J]
+Error en linea: 6. No existe una accion con ese nombre.
+\end{lstlisting}
+
+También controla que no declaremos variables con el mismo nombre:
+\lstinputlisting[firstnumber=0]{./Pruebas/DeclaracionDoble.tc}
+
+Devuelve:
+\begin{lstlisting}[style=J]
+Error en linea: 3. numero Ya existe una entidad con ese nombre.
+\end{lstlisting}
+
+\subsection{Sobrecarga}
+El compilador permite la sobrecarga de acciones y percepciones con diferentes tipos y número de parámetros.
+El mecanismo que controla la sobrecarga utiliza a su favor la tabla de simbolos. Todos los metodos se guardan con un nombre
+modificado al que se añade sus tipos de parámetros, por lo que controlamos de forma implícita la sobrecarga y además resulta
+muy fácil identificar llamadas con parámetros erroneos ya que al generar el nombre de la llamada (añadiendo parámetros al nombre
+del método) y solicitar a la tabla de simbolos el método en cuestión, si los parámetros son erroneos el método ni siquiera existirá.
+
+Dos acciones iguales una con un parámetro entero y la otra un decimal:
+\lstinputlisting[firstnumber=0]{./Pruebas/Sobrecarga.tc}
+
+Genera:
+\lstinputlisting[style=J]{./Pruebas/Sobrecarga.java}
+
+\subsection{Control de retorno en percepciones}
+Las percepciones siempre deben devolver un valor lógico, el compilador detecta si una percepción no lo hace y devuelve un error.
+
+\lstinputlisting[firstnumber=0]{./Pruebas/PerceptionReturn.tc}
+
+Devuelve:
+\begin{lstlisting}
+Error en linea: 5. perception estoyQuieto no siempre devuelve un valor. Las percepciones deben devolver siempre un valor boolean(true o false).
+\end{lstlisting}
+
+
+\subsection{Variables de solo lectura}
+El compilador lanza un error cuando intenta modificarse una variable de solo lectura como por ejemplo un parámetro de una función.
+
+\lstinputlisting[firstnumber=0]{./Pruebas/ReadOnly.tc}
+
+Devuelve:
+\begin{lstlisting}[style=J]
+Error en linea: 7. El contenido de la variable cantidad no puede modificarse.
+\end{lstlisting}
+
+
+\subsection{Prioridad en expresiones}
+El código generado respeta la prioridad en las expresiones que define el usuario y por supuesto las prioridades entre
+operadores. Para determinados casos genera paréntesis innecesarios pero al ser código generado de forma automática que
+en teoría nadie va a modificar y teniendo en cuenta que no suponen un problema de optimización ya que al compilar el código
+ Java esas expresiones se optimizarán, esto no es un problema.
+
+\lstinputlisting[firstnumber=0]{./Pruebas/PrioridadEnExpr.tc}
+
+Genera:
+\lstinputlisting[style=J]{./Pruebas/PrioridadEnExpr.java}
+
+
+\subsection{Llamadas a percepciones fuera de las reglas}
+Ya que en las percepciones no pueden modificarse variables externas a ellas mismas (son llamadas sin efectos de lado), el compilador
+ permite que se realicen llamadas a percepciones dentro de otras percepciones o acciones para utilizarse como condiciones
+ (ya que devuelven un valor boolean) con la intención de permitir la extracción de código repetido y facilitar la programación. Las acciones
+ únicamente pueden llamarse en las reglas.
+
+\lstinputlisting[firstnumber=0]{./Pruebas/LLamadasPerception.tc}
+
+Genera:
+\lstinputlisting[style=J]{./Pruebas/LLamadasPerception.java}
+
+
+\subsection{Ejemplo de código correcto}
+
+A continuación se muestran el codigo generado resultante de compilar el archivo de ejemplo Liebre.tc.
+
+\lstinputlisting[firstnumber=0]{./Pruebas/Liebre.tc}
+
+Genera:
+
+\lstinputlisting[style=J]{./Pruebas/Liebre.java}
+
+
+\subsection{Aclaraciones de funcionamiento}
+En general el compilador detecta los errores de forma correcta pero en ocasiones informa del error en una línea equivocada
+(generalmente la línea siguiente) esto se debe a que ya que los errores se detectan durante la generación descendente del ASA,
+cuando un error es identificado, el Token siguiente del parser ya pertenece a una línea posterior.
+
+Todos los ejemplos mostrados anteriormente se encuentran en la carpeta ``Pruebas'' por si desean compilarse de nuevo. En la misma carpeta
+se encuentra el archivo jar del compilador que se utiliza mediante la siguiente instrucción de consola:
+
+\begin{lstlisting}[style=J]
+java -jar CompiladorReglasTORCS.jar [ruta del archivo .tc que se desea compilar]
+\end{lstlisting}
+
+Este comando genera en la misma carpeta en la que se encuentra el jar un archivo con el mismo nombre que que archivo .tc
+y que contiene la clase java (con el mismo nombre) correspondiente. En caso de producirse algun error, se mostrará en la consola
+y no se generará el archivo .java.
+
+
+
+
 
 \end{document}

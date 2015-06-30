@@ -6,34 +6,34 @@
    \caption{Gramática LL(1) que describe el lenguaje.}
      \begin{tabularx}{\textwidth}{BBBBB}
      \toprule
-     Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+     Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
      \midrule
-           &       &       &       &  \\
-     Controller & ListDeclaration Rules & inner, perception, action, rules & \$    & inner, perception, action, rules \\
-     ListDeclaration & Declaration ListDeclaration & inner, perception, action & rules & inner, perception, action \\
-     ListDeclaration & lambda & lambda & rules & rules \\
-           &       &       &       &  \\
-     Declaration & InnerDecl & inner & inner, perception, action, rules & inner \\
-     Declaration & PerceptionDecl & perception & inner, perception, action, rules & perception \\
-     Declaration & ActionDecl & action & inner, perception, action, rules & action \\
-           &       &       &       &  \\
-     InnerDecl & inner Type identifier assing Literal semicolon & inner & inner, perception, action, rules & inner \\
-     Type  & int   & int   & identifier & int \\
-     Type  & char  & char  & identifier & char \\
-     Type  & double & double & identifier & double \\
-           &       &       &       &  \\
-     PerceptionDecl & perception identifier ArgumentDecl PerceptionBody & perception & inner, perception, action, rules & perception \\
-     ActionDecl & action identifier ArgumentDecl ActionBody & action & inner, perception, action, rules & action \\
-     ArgumentDecl & lparen ListArguments rparen & lparen & lbrace & lparen \\
-     ListArguments & Argument MoreArguments & int, char, double & rparen & int, char, double \\
-     ListArguments & lambda & lambda & rparen & rparen \\
-     MoreArguments & comma Argument MoreArguments & comma & rparen & comma \\
-     MoreArguments & lambda & lambda & rparen & rparen \\
-     Argument & Type identifier & int, char, double & comma, rparen & int, char, double \\
-           &       &       &       &  \\
-     PerceptionBody & lbrace ListPcptStatement rbrace & lbrace & perception & lbrace \\
-     ListPcptStatement & PcptStatement ListPcptStatement & int, char, double, identifier, if, while, true, false, lbrace & rbrace & int, char, double, identifier, if, while, true, false, lbrace \\
-     ListPcptStatement & lambda & lambda & rbrace & rbrace \\
+           
+     Controller & ListDeclaration Rules & inner, perception, action, rules & \$    & inner, perception, action, rules \\ \hline
+     ListDeclaration & Declaration ListDeclaration & inner, perception, action & rules & inner, perception, action \\ \hline
+     ListDeclaration & lambda & lambda & rules & rules \\ \hline
+           
+     Declaration & InnerDecl & inner & inner, perception, action, rules & inner \\ \hline
+     Declaration & PerceptionDecl & perception & inner, perception, action, rules & perception \\ \hline
+     Declaration & ActionDecl & action & inner, perception, action, rules & action \\ \hline
+           
+     InnerDecl & inner Type identifier assing Literal semicolon & inner & inner, perception, action, rules & inner \\ \hline
+     Type  & int   & int   & identifier & int \\ \hline
+     Type  & char  & char  & identifier & char \\ \hline
+     Type  & double & double & identifier & double \\ \hline
+           
+     PerceptionDecl & perception identifier ArgumentDecl PerceptionBody & perception & inner, perception, action, rules & perception \\ \hline
+     ActionDecl & action identifier ArgumentDecl ActionBody & action & inner, perception, action, rules & action \\ \hline
+     ArgumentDecl & lparen ListArguments rparen & lparen & lbrace & lparen \\ \hline
+     ListArguments & Argument MoreArguments & int, char, double & rparen & int, char, double \\ \hline
+     ListArguments & lambda & lambda & rparen & rparen \\ \hline
+     MoreArguments & comma Argument MoreArguments & comma & rparen & comma \\ \hline
+     MoreArguments & lambda & lambda & rparen & rparen \\ \hline
+     Argument & Type identifier & int, char, double & comma, rparen & int, char, double \\ \hline
+           
+     PerceptionBody & lbrace ListPcptStatement rbrace & lbrace & perception & lbrace \\ \hline
+     ListPcptStatement & PcptStatement ListPcptStatement & int, char, double, identifier, if, while, true, false, lbrace & rbrace & int, char, double, identifier, if, while, true, false, lbrace \\ \hline
+     ListPcptStatement & lambda & lambda & rbrace & rbrace \\ \hline
 
 
      \bottomrule
@@ -44,27 +44,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% oK %%%%
      \begin{tabularx}{\textwidth}{BBBbB}
      \toprule
-     Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+     Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
      \midrule
-          &       &       &       &  \\
-         ActionBody & lbrace ListActStatement rbrace & lbrace & inner, perception, action, rules & lbrace \\
-     ListActStatement & ActStatement ListActStatement & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace & rbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace \\
-     ListActStatement & lambda & lambda & rbrace & rbrace \\
-           &       &       &       &  \\
-     Rules & rules lbrace ListRules rbrace & rules & \$    & rules \\
-     ListRules & Rule ListRules & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rbrace & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-     ListRules & lambda & lambda & rbrace & rbrace \\
+          
+         ActionBody & lbrace ListActStatement rbrace & lbrace & inner, perception, action, rules & lbrace \\ \hline
+     ListActStatement & ActStatement ListActStatement & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace & rbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace \\ \hline
+     ListActStatement & lambda & lambda & rbrace & rbrace \\ \hline
+           
+     Rules & rules lbrace ListRules rbrace & rules & \$    & rules \\ \hline
+     ListRules & Rule ListRules & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rbrace & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+     ListRules & lambda & lambda & rbrace & rbrace \\ \hline
 
 
-     PcptStatement & PcptDecl & int, char, double & int, char, double, identifier, if, while, true, false, lbrace, rbrace & int, char, double \\
-     PcptStatement & PcptAssignStm & identifier & int, char, double, identifier, if, while, true, false, lbrace, rbrace & identifier \\
-     PcptStatement & PcptIfStm & if    & int, char, double, identifier, if, while, true, false, lbrace, rbrace & if \\
-     PcptStatement & PcptWhileStm & while & int, char, double, identifier, if, while, true, false, lbrace, rbrace & while \\
-     PcptStatement & PcptTrueStm & true  & int, char, double, identifier, if, while, true, false, lbrace, rbrace & true \\
-     PcptStatement & PcptFalseStm & false & int, char, double, identifier, if, while, true, false, lbrace, rbrace & false \\
-     PcptStatement & PcptBlockStm & lbrace & int, char, double, identifier, if, while, true, false, lbrace, rbrace & lbrace \\
-           &       &       &       &  \\
-     PcptDecl & Type identifier OptAssign semicolon & int, char, double & int, char, double, identifier, if, while, true, false, lbrace, rbrace & int, char, double \\
+     PcptStatement & PcptDecl & int, char, double & int, char, double, identifier, if, while, true, false, lbrace, rbrace & int, char, double \\ \hline
+     PcptStatement & PcptAssignStm & identifier & int, char, double, identifier, if, while, true, false, lbrace, rbrace & identifier \\ \hline
+     PcptStatement & PcptIfStm & if    & int, char, double, identifier, if, while, true, false, lbrace, rbrace & if \\ \hline
+     PcptStatement & PcptWhileStm & while & int, char, double, identifier, if, while, true, false, lbrace, rbrace & while \\ \hline
+     PcptStatement & PcptTrueStm & true  & int, char, double, identifier, if, while, true, false, lbrace, rbrace & true \\ \hline
+     PcptStatement & PcptFalseStm & false & int, char, double, identifier, if, while, true, false, lbrace, rbrace & false \\ \hline
+     PcptStatement & PcptBlockStm & lbrace & int, char, double, identifier, if, while, true, false, lbrace, rbrace & lbrace \\ \hline
+           
+     PcptDecl & Type identifier OptAssign semicolon & int, char, double & int, char, double, identifier, if, while, true, false, lbrace, rbrace & int, char, double \\ \hline
 
      \bottomrule
      \end{tabularx}%
@@ -73,26 +73,26 @@
 
 \begin{tabularx}{\textwidth}{BBBBB}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
-OptAssign & assign Expr & assign & semicolon & assign \\
-     OptAssign & lambda & lambda & semicolon & semicolon \\
-           &       &       &       &  \\
-     PcptIfStm & if lparen Expr rparen PcptStatement PcptElse & if    & int, char, double, identifier, if, while, true, false, lbrace, rbrace & if \\
-     PcptElse & else PcptStatement & else  & int, char, double, identifier, if, while, true, false, lbrace, rbrace & else \\
-     PcptElse & lambda & lambda & int, char, double, identifier, if, while, true, false, lbrace, rbrace & int, char, double, identifier, if, while, true, false, lbrace, rbrace \\
-           &       &       &       &  \\
-     PcptWhileStm & while lparen Expr rparen PcptStatement & while & int, char, double, identifier, if, while, true, false, lbrace, rbrace & while \\
-           &       &       &       &  \\
-     PcptAssignStm & identifier assign Expr semicolon & identifier & int, char, double, identifier, if, while, true, false, lbrace, rbrace & identifier \\
-           &       &       &       &  \\
-     PcptTrueStm & true semicolon & true  & int, char, double, identifier, if, while, true, false, lbrace, rbrace & true \\
-           &       &       &       &  \\
-     PcptFalseStm & false semicolon & false & int, char, double, identifier, if, while, true, false, lbrace, rbrace & false \\
-           &       &       &       &  \\
-     PcptBlockStm & lbrace ListPcptStatement rbrace & lbrace & int, char, double, identifier, if, while, true, false, lbrace, rbrace & lbrace \\
-           &       &       &       &  \\
-     ActStatement & ActDecl & int, char, double & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & int, char, double \\
+OptAssign & assign Expr & assign & semicolon & assign \\ \hline
+     OptAssign & lambda & lambda & semicolon & semicolon \\ \hline
+           
+     PcptIfStm & if lparen Expr rparen PcptStatement PcptElse & if    & int, char, double, identifier, if, while, true, false, lbrace, rbrace & if \\ \hline
+     PcptElse & else PcptStatement & else  & int, char, double, identifier, if, while, true, false, lbrace, rbrace & else \\ \hline
+     PcptElse & lambda & lambda & int, char, double, identifier, if, while, true, false, lbrace, rbrace & int, char, double, identifier, if, while, true, false, lbrace, rbrace \\ \hline
+           
+     PcptWhileStm & while lparen Expr rparen PcptStatement & while & int, char, double, identifier, if, while, true, false, lbrace, rbrace & while \\ \hline
+           
+     PcptAssignStm & identifier assign Expr semicolon & identifier & int, char, double, identifier, if, while, true, false, lbrace, rbrace & identifier \\ \hline
+           
+     PcptTrueStm & true semicolon & true  & int, char, double, identifier, if, while, true, false, lbrace, rbrace & true \\ \hline
+           
+     PcptFalseStm & false semicolon & false & int, char, double, identifier, if, while, true, false, lbrace, rbrace & false \\ \hline
+           
+     PcptBlockStm & lbrace ListPcptStatement rbrace & lbrace & int, char, double, identifier, if, while, true, false, lbrace, rbrace & lbrace \\ \hline
+           
+     ActStatement & ActDecl & int, char, double & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & int, char, double \\ \hline
 
  \bottomrule
      \end{tabularx}%
@@ -100,20 +100,20 @@ OptAssign & assign Expr & assign & semicolon & assign \\
 
 \begin{tabularx}{\textwidth}{BBBBB}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
-          ActStatement & ActAssignStm & identifier, **conjuntoOutputs & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & identifier, **conjuntoOutputs \\
-               ActStatement & ActIfStm & if    & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & if \\
-               ActStatement & ActWhileStm & while & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & while \\
-               ActStatement & ActBlockStm & lbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & lbrace \\
-                     &       &       &       &  \\
-               ActDecl & Type identifier OptAssign semicolon & int, char, double & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & int, char, double \\
-                     &       &       &       &  \\
-               ActIfStm & if lparen Expr rparen ActStatement ActElse & if    & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & if \\
-               ActElse & else ActStatement & else  & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & else \\
-               ActElse & lambda & lambda & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace \\
-                     &       &       &       &  \\
-               ActWhileStm & while lparen Expr rparen ActStatement & while & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & while \\
+          ActStatement & ActAssignStm & identifier, **conjuntoOutputs & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & identifier, **conjuntoOutputs \\ \hline
+               ActStatement & ActIfStm & if    & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & if \\ \hline
+               ActStatement & ActWhileStm & while & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & while \\ \hline
+               ActStatement & ActBlockStm & lbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & lbrace \\ \hline
+                     
+               ActDecl & Type identifier OptAssign semicolon & int, char, double & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & int, char, double \\ \hline
+                     
+               ActIfStm & if lparen Expr rparen ActStatement ActElse & if    & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & if \\ \hline
+               ActElse & else ActStatement & else  & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & else \\ \hline
+               ActElse & lambda & lambda & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace \\ \hline
+                     
+               ActWhileStm & while lparen Expr rparen ActStatement & while & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & while \\ \hline
 
            \bottomrule
                \end{tabularx}%
@@ -122,25 +122,25 @@ OptAssign & assign Expr & assign & semicolon & assign \\
 
 \begin{tabularx}{\textwidth}{BBBBB}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
-      &       &       &       &  \\
-               ActAssignStm & identifier assign Expr semicolon & identifier & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & identifier \\
-               ActAssignStm & OutputVar assign Expr semicolon & **conjuntoOutputs & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & **conjuntoOutputs \\
-                     &       &       &       &  \\
-               ActBlockStm & lbrace ListActStatement rbrace & lbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & lbrace \\
-                     &       &       &       &  \\
-               Rule  & Expr arrow ActionCall MoreActionCall semicolon & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rules, rbrace & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-               MoreActionCall & comma ActionCall MoreActionCall & comma & semicolon & comma \\
-               MoreActionCall & lambda & lambda & semicolon & semicolon \\
-                     &       &       &       &  \\
-               ActionCall & identifier lparen ListExpr rparen & identifier & comma, semicolon & identifier \\
-               ListExpr & Expr MoreExpr & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-               ListExpr & lambda & lambda & rparen & rparen \\
-               MoreExpr & comma Expr MoreExpr & comma & rparen & comma \\
-               MoreExpr & lambda & lambda & rparen & rparen \\
-                     &       &       &       &  \\
-               Expr  & AndExpr ListOrExpr & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
+      
+               ActAssignStm & identifier assign Expr semicolon & identifier & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & identifier \\ \hline
+               ActAssignStm & OutputVar assign Expr semicolon & **conjuntoOutputs & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & **conjuntoOutputs \\ \hline
+                     
+               ActBlockStm & lbrace ListActStatement rbrace & lbrace & int, char, double, identifier, **ConjuntoOutputs, if, while, lbrace, rbrace & lbrace \\ \hline
+                     
+               Rule  & Expr arrow ActionCall MoreActionCall semicolon & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rules, rbrace & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+               MoreActionCall & comma ActionCall MoreActionCall & comma & semicolon & comma \\ \hline
+               MoreActionCall & lambda & lambda & semicolon & semicolon \\ \hline
+                     
+               ActionCall & identifier lparen ListExpr rparen & identifier & comma, semicolon & identifier \\ \hline
+               ListExpr & Expr MoreExpr & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+               ListExpr & lambda & lambda & rparen & rparen \\ \hline
+               MoreExpr & comma Expr MoreExpr & comma & rparen & comma \\ \hline
+               MoreExpr & lambda & lambda & rparen & rparen \\ \hline
+                     
+               Expr  & AndExpr ListOrExpr & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
 
 
            \bottomrule
@@ -149,22 +149,22 @@ OptAssign & assign Expr & assign & semicolon & assign \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{tabularx}{\textwidth}{BBBBB}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
-ListOrExpr & or AndExpr ListOrExpr & or    & rparen, semicolon, arrow, comma & or \\
-               ListOrExpr & lambda & lambda & rparen, semicolon, arrow, comma & rparen, semicolon, arrow, comma \\
-                     &       &       &       &  \\
-               AndExpr & RelExpr ListAndExpr & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-               ListAndExpr & and RelExpr ListAndExpr & and   & rparen, semicolon, arrow, comma, or & and \\
-               ListAndExpr & lambda & lambda & rparen, semicolon, arrow, comma, or & rparen, semicolon, arrow, comma, or \\
-                     &       &       &       &  \\
-               RelExpr & SumExpr OptionalRelOp & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or, and & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-               OptionalRelOp & RelOp SumExpr & eq, ne, gt, ge, lt, le & rparen, semicolon, arrow, comma, or, and & eq, ne, gt, ge, lt, le \\
-               OptionalRelOp & lambda & lambda & rparen, semicolon, arrow, comma, or, and & rparen, semicolon, arrow, comma, or, and \\
+ListOrExpr & or AndExpr ListOrExpr & or    & rparen, semicolon, arrow, comma & or \\ \hline
+               ListOrExpr & lambda & lambda & rparen, semicolon, arrow, comma & rparen, semicolon, arrow, comma \\ \hline
+                     
+               AndExpr & RelExpr ListAndExpr & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+               ListAndExpr & and RelExpr ListAndExpr & and   & rparen, semicolon, arrow, comma, or & and \\ \hline
+               ListAndExpr & lambda & lambda & rparen, semicolon, arrow, comma, or & rparen, semicolon, arrow, comma, or \\ \hline
+                     
+               RelExpr & SumExpr OptionalRelOp & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or, and & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+               OptionalRelOp & RelOp SumExpr & eq, ne, gt, ge, lt, le & rparen, semicolon, arrow, comma, or, and & eq, ne, gt, ge, lt, le \\ \hline
+               OptionalRelOp & lambda & lambda & rparen, semicolon, arrow, comma, or, and & rparen, semicolon, arrow, comma, or, and \\ \hline
 
-                     &       &       &       &  \\
-               SumExpr & UnOp ProdExpr ListSumOp & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-               ListSumOp & SumOp ProdExpr ListSumOp & plus, minus & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le & plus, minus \\
+                     
+               SumExpr & UnOp ProdExpr ListSumOp & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+               ListSumOp & SumOp ProdExpr ListSumOp & plus, minus & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le & plus, minus \\ \hline
 
 
 
@@ -174,22 +174,22 @@ ListOrExpr & or AndExpr ListOrExpr & or    & rparen, semicolon, arrow, comma & o
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{tabularx}{\textwidth}{BBBbB}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
-           ListSumOp & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le \\
-      &       &       &       &  \\
-               UnOp  & not   & not   & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & not \\
-               UnOp  & minus & minus & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & minus \\
-               UnOp  & plus  & plus  & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & plus \\
-               UnOp  & lambda & lambda & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-                     &       &       &       &  \\
-               SumOp & minus & minus & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & minus \\
-               SumOp & plus  & plus  & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & plus \\
-                     &       &       &       &  \\
-               ProdExpr & Factor ListFactor & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\
-               ListFactor & MultOp Factor ListFactor & prod, div, mod & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus & prod, div, mod \\
-ListFactor & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus \\
-                               &       &       &       &  \\
+           ListSumOp & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le \\ \hline
+      
+               UnOp  & not   & not   & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & not \\ \hline
+               UnOp  & minus & minus & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & minus \\ \hline
+               UnOp  & plus  & plus  & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & plus \\ \hline
+               UnOp  & lambda & lambda & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+                     
+               SumOp & minus & minus & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & minus \\ \hline
+               SumOp & plus  & plus  & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & plus \\ \hline
+                     
+               ProdExpr & Factor ListFactor & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs \\ \hline
+               ListFactor & MultOp Factor ListFactor & prod, div, mod & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus & prod, div, mod \\ \hline
+ListFactor & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus \\ \hline
+                               
 
  \bottomrule
                \end{tabularx}%
@@ -198,18 +198,18 @@ ListFactor & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne,
 
 \begin{tabularx}{\textwidth}{BBBbB}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
 
-                         MultOp & prod  & prod  & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & prod \\
-                         MultOp & div   & div   & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & div \\
-                         MultOp & mod   & mod   & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & mod \\
-                               &       &       &       &  \\
-                         Factor & Literal & integer\_literal, double\_literal, true, false & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & integer\_literal, double\_literal, true, false \\
-                         Factor & InputVar & **conjuntoInputs & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & **conjuntoInputs \\
-                         Factor & Reference & identifier & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & identifier \\
-                         Factor & lparen Expr rparen & lparen & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & lparen \\
-                               &       &       &       &  \\
+                         MultOp & prod  & prod  & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & prod \\ \hline
+                         MultOp & div   & div   & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & div \\ \hline
+                         MultOp & mod   & mod   & integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & mod \\ \hline
+                               
+                         Factor & Literal & integer\_literal, double\_literal, true, false & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & integer\_literal, double\_literal, true, false \\ \hline
+                         Factor & InputVar & **conjuntoInputs & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & **conjuntoInputs \\ \hline
+                         Factor & Reference & identifier & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & identifier \\ \hline
+                         Factor & lparen Expr rparen & lparen & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & lparen \\ \hline
+                               
 
 
  \bottomrule
@@ -219,18 +219,18 @@ ListFactor & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne,
 
                \begin{tabularx}{\textwidth}{BBBbB}
                          \toprule
-                         Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+                         Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
                          \midrule
-               Literal & integer\_literal & integer\_literal & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & integer\_literal \\
-                                        Literal & double\_literal & double\_literal & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & double\_literal \\
-                                        Literal & true  & true  & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & true \\
-                                        Literal & false & false & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & false \\
-                                              &       &       &       &  \\
-                                        Reference & identifier OptMethodCall & identifier & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & identifier \\
-                                        OptMethodCall & MethodCall & lparen & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & lparen \\
-                                        OptMethodCall & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod \\
-                                              &       &       &       &  \\
-                                        MethodCall & lparen ListExpr rparen & lparen & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & lparen \\
+               Literal & integer\_literal & integer\_literal & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & integer\_literal \\ \hline
+                                        Literal & double\_literal & double\_literal & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & double\_literal \\ \hline
+                                        Literal & true  & true  & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & true \\ \hline
+                                        Literal & false & false & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod, semicolon & false \\ \hline
+                                              
+                                        Reference & identifier OptMethodCall & identifier & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & identifier \\ \hline
+                                        OptMethodCall & MethodCall & lparen & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & lparen \\ \hline
+                                        OptMethodCall & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod \\ \hline
+                                              
+                                        MethodCall & lparen ListExpr rparen & lparen & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & lparen \\ \hline
 
  \bottomrule
                \end{tabularx}%
@@ -238,28 +238,28 @@ ListFactor & lambda & lambda & rparen, semicolon, arrow, comma, or, and, eq, ne,
 
      \begin{tabularx}{\textwidth}{sssBs}
           \toprule
-          Simbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCION \\
+          Símbolo & Regla & PRIMEROS & SIGUIENTES & PREDICCIÓN \\ \hline
           \midrule
-                &       &       &       &  \\
-                         RelOp & eq    & eq    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & eq \\
-                         RelOp & ne    & ne    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & ne \\
-                         RelOp & gt    & gt    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & gt \\
-                         RelOp & ge    & ge    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & ge \\
-                         RelOp & lt    & lt    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & lt \\
-                         RelOp & le    & le    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & le \\
-                  &       &       &       &  \\
-                 InputVar & gear  & gear  & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & gear \\
-                 InputVar & speed & speed & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & speed \\
-                 InputVar & angle & angle & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & angle \\
-                 InputVar & position & position & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & position \\
-                 InputVar & rpm   & rpm   & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & rpm \\
-                 InputVar & sensorX & sensorX & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & sensorX \\
+                
+                         RelOp & eq    & eq    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & eq \\ \hline
+                         RelOp & ne    & ne    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & ne \\ \hline
+                         RelOp & gt    & gt    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & gt \\ \hline
+                         RelOp & ge    & ge    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & ge \\ \hline
+                         RelOp & lt    & lt    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & lt \\ \hline
+                         RelOp & le    & le    & not, minus, plus, integer\_literal, double\_literal, true, false, identifier, lparen, **conjuntoInputs & le \\ \hline
+                  
+                 InputVar & gear  & gear  & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & gear \\ \hline
+                 InputVar & speed & speed & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & speed \\ \hline
+                 InputVar & angle & angle & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & angle \\ \hline
+                 InputVar & position & position & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & position \\ \hline
+                 InputVar & rpm   & rpm   & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & rpm \\ \hline
+                 InputVar & sensorX & sensorX & rparen, semicolon, arrow, comma, or, and, eq, ne, gt, ge, lt, le, plus, minus, prod, div, mod & sensorX \\ \hline
 
-                       &       &       &       &  \\
-                       OutputVar & gear  & gear  & assign & gear \\
-                            OutputVar & accelerate & accelerate & assign & accelerate \\
-                            OutputVar & brake & brake & assign & brake \\
-                            OutputVar & steering & steering & assign & steering \\
-                                  &       &       &       &  \\
+                       
+                       OutputVar & gear  & gear  & assign & gear \\ \hline
+                            OutputVar & accelerate & accelerate & assign & accelerate \\ \hline
+                            OutputVar & brake & brake & assign & brake \\ \hline
+                            OutputVar & steering & steering & assign & steering \\ \hline
+                                  
           \bottomrule
      \end{tabularx}%

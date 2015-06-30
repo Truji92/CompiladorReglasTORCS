@@ -40,12 +40,12 @@ public class Controller {
     }
 
     private String extractName(String filename) {
-        String auxFilename = filename;
-        while(!auxFilename.matches("[^/]*.tc")){
-            int index = auxFilename.indexOf('/') + 1;
-            auxFilename = auxFilename.substring(index);
-        }
-        return auxFilename.substring(0, auxFilename.length()-3);
+        int index1 = filename.lastIndexOf('/');
+        int index2 = filename.lastIndexOf("\\");
+        int index = Math.max(index1, index2);
+
+        if (index == -1) return filename.substring(0, filename.length() - 3);
+        return filename.substring(index+1, filename.length()-3);
     }
 
     private String genJavaCodeDeclarations() {
@@ -57,5 +57,9 @@ public class Controller {
                     "\n";
         }
         return javaCode;
+    }
+
+    public String genJavaFilename(String filename) {
+        return extractName(filename) + ".java";
     }
 }

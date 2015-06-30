@@ -69,13 +69,14 @@ public class TORCSParser implements TokenConstants {
 
     private SymbolTable symbolTable;
 
-	public boolean parse(String filename) throws Exception{
+    private Controller ASA;
+
+	public boolean parse(String filename){
 		try {
 			this.lexer = new TORCSLexer(filename);
             this.nextToken = lexer.getNextToken();
             this.symbolTable = new SymbolTable(this);
-            Controller ASA = parseController();
-            System.out.println(ASA.genJavaCode(filename));
+            ASA = parseController();
             return nextToken.getKind() == EOF;
 		} catch (Exception ex) {
 			System.out.println(ex.toString());
@@ -83,8 +84,7 @@ public class TORCSParser implements TokenConstants {
 		}
 	}
 
-
-	public static void main(String[] args) throws Exception{
+	public static void main(String[] args) {
 		if(args.length == 0) return;
 
 		TORCSParser parser = new TORCSParser();
@@ -121,6 +121,7 @@ public class TORCSParser implements TokenConstants {
             }
         }
     }
+
 
     private List<Declaration> parseListDeclaration() throws SintaxException, SemanticException{
         switch (nextToken.getKind()) {
@@ -739,7 +740,7 @@ public class TORCSParser implements TokenConstants {
                 match(ASSIGN);
                 Expression expression = parseExpr();
                 match(SEMICOLON);
-                if (Variable.checkMatchingType(var.getType(), expression.getType()))
+                if (!Variable.checkMatchingType(var.getType(), expression.getType()))
                     throw new SemanticException(SemanticException.TYPE_MISSMATCH, nextToken);
                 else return new PcptAssignStm(var, expression);
             default: {
@@ -1803,7 +1804,9 @@ public class TORCSParser implements TokenConstants {
 
     private static final boolean readOnly = true;
 
-
+    public Controller getASA() {
+        return ASA;
+    }
 
     public Token getNextToken() {
         return nextToken;
