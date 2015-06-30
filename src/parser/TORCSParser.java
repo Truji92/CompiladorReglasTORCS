@@ -1,4 +1,5 @@
-package parser;//------------------------------------------------------------------//
+package parser;
+//------------------------------------------------------------------//
 //COPYRIGHT NOTICE                          //
 //------------------------------------------------------------------//
 //Copyright (c) 2008, Francisco Jos� Moreno Velo                   //
@@ -338,7 +339,7 @@ public class TORCSParser implements TokenConstants {
                 match(LBRACE);
                 List<PcptStatement> statements = ListPcptStatement();
                 match(RBRACE);
-                return new PcptBlockStm(statements); //TODO check return
+                return new PcptBlockStm(statements);
             default: {
                 int[] expected = {LBRACE};
                 throw new SintaxException(nextToken, expected);
@@ -630,7 +631,7 @@ public class TORCSParser implements TokenConstants {
             case DOUBLE:
                 int type = parseType();
                 String name = match(IDENTIFIER);
-                Variable localVar = new Variable(name, type, !readOnly); //TODO ControlLocales
+                Variable localVar = new Variable(name, type, !readOnly);
                 symbolTable.addVariable(localVar);
 
                 Expression assign = parseOptAssign(type);

@@ -65,6 +65,6 @@ public class SemanticException extends Exception {
 
     @Override
     public String toString() {
-        return msg;
+        return msg + "\n\n\n";
     }
 }
